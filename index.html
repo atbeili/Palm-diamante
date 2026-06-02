@@ -418,7 +418,7 @@ function attachSim(d) {
   });
 }
 
-async function loadFromScript() {
+function loadFromScript() {
   const bar   = $('updateBar');
   const title = $('updateTitle');
   const label = $('dataSourceLabel');
@@ -427,60 +427,78 @@ async function loadFromScript() {
   const localCount = Object.keys(DB).length;
   if (bar)   bar.style.background = '#1D7A34';
   if (title) title.textContent = 'Datos locales (' + localCount + ' clientes)';
-  if (label) label.innerHTML = localCount + ' clientes listos &mdash; intentando sincronizar...';
+  if (label) label.innerHTML = localCount + ' clientes listos &mdash; sincronizando con Drive...';
 
-  try {
-    const controller = new AbortController();
-    setTimeout(() => controller.abort(), 10000);
-    const res = await fetch(SCRIPT_URL, {
-      signal: controller.signal,
-      redirect: 'follow'
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const raw = await res.json();
-
-    // raw is array of rows: [[col1, col2, ...], ...]
-    // Find header row (has 'Cliente' in col 5)
-    let hi = -1;
-    for (let i = 0; i < Math.min(raw.length, 10); i++) {
-      if (raw[i][4] && String(raw[i][4]).toLowerCase().includes('cliente')) { hi = i; break; }
-    }
-    if (hi === -1) hi = 4;
-
-    const toN = v => { if (!v) return 0; const n = parseFloat(String(v).replace(/[$%,\s]/g,'')); return isNaN(n) ? 0 : Math.round(n*100)/100; };
-    const toS = v => (v || '').toString().trim();
-
-    const newClients = {};
-    for (let i = hi + 1; i < raw.length; i++) {
-      const r = raw[i]; if (!r || r.length < 5) continue;
-      const name = toS(r[4]); if (!name || name.length < 3) continue;
-      if (['cliente','total','subtotal','totales'].some(x => name.toLowerCase() === x)) continue;
-      const e = {
-        torre:toS(r[1]), nivel:toS(r[2]), depto:toS(r[3]), tel:toS(r[5]),
-        estatus:toS(r[6]), vendedor:toS(r[7]), fecha:toS(r[8]).slice(0,10),
-        precio:toN(r[9]), precio_m2:toN(r[10]), depositos:toN(r[11]),
-        efectivo:toN(r[12]), dep_ef:toN(r[13]), enganche:toN(r[14]),
-        doc:toN(r[15]), pago_final:toN(r[16]), saldo:toN(r[17]),
-        vencido:toN(r[18]), venc_desde:toS(r[19]), ant:toS(r[20]),
-        nota:toS(r[21]), desc_pct:toN(r[22]), desc_monto:toN(r[23]), acuerdo:toS(r[24])
-      };
-      if (!newClients[name]) newClients[name] = [];
-      newClients[name].push(e);
-    }
-
-    const count = Object.keys(newClients).length;
-    if (count === 0) throw new Error('Sin clientes');
-    Object.keys(DB).forEach(k => delete DB[k]);
-    Object.assign(DB, newClients);
-    clearAll();
-    if (title) title.textContent = 'Sincronizado con Google Sheets';
-    if (label) label.innerHTML = count + ' clientes actualizados automaticamente';
-
-  } catch(err) {
-    console.warn('Script:', err.message);
+  // Use JSONP to bypass CORS
+  const callbackName = 'palmCallback_' + Date.now();
+  const script = document.createElement('script');
+  
+  const timeout = setTimeout(() => {
+    cleanup();
     if (title) title.textContent = 'Datos locales (' + Object.keys(DB).length + ' clientes)';
     if (label) label.innerHTML = Object.keys(DB).length + ' clientes &mdash; Drive no disponible';
+  }, 10000);
+
+  function cleanup() {
+    clearTimeout(timeout);
+    delete window[callbackName];
+    if (script.parentNode) script.parentNode.removeChild(script);
   }
+
+  window[callbackName] = function(raw) {
+    cleanup();
+    try {
+      const toN = v => { if (!v) return 0; const n = parseFloat(String(v).replace(/[$%,\s]/g,'')); return isNaN(n) ? 0 : Math.round(n*100)/100; };
+      const toS = v => (v || '').toString().trim();
+
+      // Find header row
+      let hi = -1;
+      for (let i = 0; i < Math.min(raw.length, 10); i++) {
+        if (raw[i][4] && String(raw[i][4]).toLowerCase().includes('cliente')) { hi = i; break; }
+      }
+      if (hi === -1) hi = 4;
+
+      const newClients = {};
+      for (let i = hi + 1; i < raw.length; i++) {
+        const r = raw[i]; if (!r || r.length < 5) continue;
+        const name = toS(r[4]); if (!name || name.length < 3) continue;
+        if (['cliente','total','subtotal','totales'].some(x => name.toLowerCase() === x)) continue;
+        const e = {
+          torre:toS(r[1]), nivel:toS(r[2]), depto:toS(r[3]), tel:toS(r[5]),
+          estatus:toS(r[6]), vendedor:toS(r[7]), fecha:toS(r[8]).slice(0,10),
+          precio:toN(r[9]), precio_m2:toN(r[10]), depositos:toN(r[11]),
+          efectivo:toN(r[12]), dep_ef:toN(r[13]), enganche:toN(r[14]),
+          doc:toN(r[15]), pago_final:toN(r[16]), saldo:toN(r[17]),
+          vencido:toN(r[18]), venc_desde:toS(r[19]), ant:toS(r[20]),
+          nota:toS(r[21]), desc_pct:toN(r[22]), desc_monto:toN(r[23]), acuerdo:toS(r[24])
+        };
+        if (!newClients[name]) newClients[name] = [];
+        newClients[name].push(e);
+      }
+
+      const count = Object.keys(newClients).length;
+      if (count === 0) throw new Error('Sin clientes');
+      Object.keys(DB).forEach(k => delete DB[k]);
+      Object.assign(DB, newClients);
+      clearAll();
+      if (bar)   bar.style.background = '#1D7A34';
+      if (title) title.textContent = 'Sincronizado con Google Sheets';
+      if (label) label.innerHTML = count + ' clientes actualizados automaticamente';
+    } catch(err) {
+      console.warn('JSONP parse error:', err.message);
+      if (title) title.textContent = 'Datos locales (' + Object.keys(DB).length + ' clientes)';
+      if (label) label.innerHTML = Object.keys(DB).length + ' clientes cargados';
+    }
+  };
+
+  script.onerror = function() {
+    cleanup();
+    if (title) title.textContent = 'Datos locales (' + Object.keys(DB).length + ' clientes)';
+    if (label) label.innerHTML = Object.keys(DB).length + ' clientes &mdash; Drive no disponible';
+  };
+
+  script.src = SCRIPT_URL + '?callback=' + callbackName;
+  document.head.appendChild(script);
 }
 
 
