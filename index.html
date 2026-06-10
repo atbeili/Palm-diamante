@@ -1063,6 +1063,22 @@ function openWhatsappFolder() {
   });
 }
 
+
+function openWhatsappUpload() {
+
+  if (!curData || !curClient) {
+
+    showToast('Primero selecciona un cliente', true);
+
+    return;
+
+  }
+
+  const url = SCRIPT_URL + '?view=whatsappUpload&cliente=' + encodeURIComponent(curClient);
+
+  window.open(url, '_blank');
+
+}
 function editarHistorial(rowNumber) {
   const item = (SEG_HISTORY || []).find(h => String(h.rowNumber || '') === String(rowNumber || ''));
   if (!item) return showToast('No se encontró el registro', true);
@@ -1294,11 +1310,11 @@ function renderFicha(d) {
             <datalist id="segResponsableOptions"></datalist>
             <div id="segResponsableDropdown" class="estado-options"></div>
           </div>
-        </div>
-        <div class="follow-actions activity-actions">
-          <button class="btn btn-clear" type="button" onclick="openWhatsappFolder()">📎 Abrir carpeta WhatsApp</button>
-          <button class="btn btn-save-follow" type="button" onclick="saveSeguimiento()">Guardar</button>
-        </div>
+    <div class="follow-actions activity-actions">
+  <button class="btn btn-clear" type="button" onclick="openWhatsappFolder()">📂 Abrir carpeta WhatsApp</button>
+  <button class="btn btn-clear" type="button" onclick="openWhatsappUpload()">📥 Subir chat WhatsApp</button>
+  <button class="btn btn-save-follow" type="button" onclick="saveSeguimiento()">Guardar</button>
+</div>
         <div class="follow-status" id="segStatus">Cargando seguimiento...</div>
         <div style="margin-top:12px;" class="f-lbl">Historial completo</div>
         <div class="hist-list" id="segHistorial"><div class="hist-item">Sin historial cargado.</div></div>
