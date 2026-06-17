@@ -1326,9 +1326,20 @@ function renderFicha(d) {
 
   <input type="hidden" id="segEstadoWhatsApp">
 
-  <label><input type="radio" name="formaPagoRadio" value="Crédito hipotecario" onchange="setFormaPago()"> Crédito hipotecario</label>
-  <label><input type="radio" name="formaPagoRadio" value="Recursos propios" onchange="setFormaPago()"> Recursos propios</label>
-  <label><input type="radio" name="formaPagoRadio" value="Otro" onchange="setFormaPago()"> Otro</label>
+<label style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+  <input type="radio" name="formaPagoRadio" value="Crédito hipotecario" onchange="setFormaPago()">
+  Crédito hipotecario
+</label>
+
+<label style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+  <input type="radio" name="formaPagoRadio" value="Recursos propios" onchange="setFormaPago()">
+  Recursos propios
+</label>
+
+<label style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+  <input type="radio" name="formaPagoRadio" value="Otro" onchange="setFormaPago()">
+  Otro
+</label>
 
   <input type="text" id="formaPagoOtro" placeholder="Especifica otro" style="display:none;margin-top:6px;" oninput="setFormaPago()">
 </div>
