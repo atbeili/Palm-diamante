@@ -939,7 +939,7 @@ function loadSeguimientoActual() {
       setVal('segPrioridad', 'Media');
       setVal('segResponsable', s.responsable || '');
       setVal('segProximoContacto', s.proximoContacto || '');
-      setVal('segEstadoWhatsApp', s.estadoWhatsApp || '');
+      setVal('segEstadoWhatsApp', s.formaPago || s.estadoWhatsApp || '');
       updateSummaryStrip(s);
     } else {
       setVal('segEstado', '');
@@ -963,7 +963,7 @@ function loadSeguimientoActual() {
 
 function updateSummaryStrip(s) {
   const setTxt=(id,v)=>{const el=$(id); if(el) el.textContent=v||'--';};
-  setTxt('summaryWhats', s && s.estadoWhatsApp ? s.estadoWhatsApp : (s && s.estado ? s.estado : '--'));
+ setTxt('summaryWhats', s && s.formaPago ? s.formaPago : (s && s.estadoWhatsApp ? s.estadoWhatsApp : '--'));
   setTxt('summaryProximo', s && s.proximoContacto ? s.proximoContacto : '--');
   setTxt('summaryResp', s && s.responsable ? s.responsable : '--');
   setTxt('summaryAct', s && s.actualizado ? s.actualizado : '--');
@@ -1029,7 +1029,28 @@ function saveSeguimiento() {
     showToast('Error al guardar seguimiento', true);
   });
 }
+function setFormaPago() {
+  const selected = document.querySelector('input[name="formaPagoRadio"]:checked');
+  const otroInput = document.getElementById('formaPagoOtro');
+  const hidden = document.getElementById('segEstadoWhatsApp');
 
+  if (!selected) {
+    hidden.value = '';
+    otroInput.style.display = 'none';
+    return;
+  }
+
+  if (selected.value === 'Otro') {
+    otroInput.style.display = 'block';
+    hidden.value = otroInput.value.trim()
+      ? 'Otro: ' + otroInput.value.trim()
+      : 'Otro';
+  } else {
+    otroInput.style.display = 'none';
+    otroInput.value = '';
+    hidden.value = selected.value;
+  }
+}
 
 function openWhatsappFolder() {
   if (!curData || !curClient) {
@@ -1230,7 +1251,7 @@ function renderWaiting() {
   $('pdfBtns').classList.remove('visible');
   $('content').innerHTML = `
     <div class="summary-strip" id="summaryStrip">
-      <div class="summary-box"><div class="f-lbl">Estado WhatsApp</div><div class="summary-main" id="summaryWhats">--</div></div>
+      <div class="summary-box"><div class="f-lbl">Forma de pago</div><div class="summary-main" id="summaryWhats">--</div></div>
       <div class="summary-box"><div class="f-lbl">Próximo contacto</div><div class="summary-main" id="summaryProximo">--</div></div>
       <div class="summary-box"><div class="f-lbl">Responsable</div><div class="summary-main" id="summaryResp">--</div></div>
       <div class="summary-box"><div class="f-lbl">Última actualización</div><div class="summary-main" id="summaryAct">--</div></div>
@@ -1300,7 +1321,17 @@ function renderFicha(d) {
         </div>
         <div class="next-contact-row">
           <div class="f"><div class="f-lbl">Próximo contacto</div><input type="date" id="segProximoContacto"></div>
-          <div class="f"><div class="f-lbl">Estado WhatsApp</div><input type="text" id="segEstadoWhatsApp" list="segEstadoWhatsAppOptions" placeholder="Ej. Promesa de pago"><datalist id="segEstadoWhatsAppOptions"></datalist></div>
+         <div class="f">
+  <div class="f-lbl">Forma de pago</div>
+
+  <input type="hidden" id="segEstadoWhatsApp">
+
+  <label><input type="radio" name="formaPagoRadio" value="Crédito hipotecario" onchange="setFormaPago()"> Crédito hipotecario</label>
+  <label><input type="radio" name="formaPagoRadio" value="Recursos propios" onchange="setFormaPago()"> Recursos propios</label>
+  <label><input type="radio" name="formaPagoRadio" value="Otro" onchange="setFormaPago()"> Otro</label>
+
+  <input type="text" id="formaPagoOtro" placeholder="Especifica otro" style="display:none;margin-top:6px;" oninput="setFormaPago()">
+</div>
         </div>
         <div class="f" style="margin-top:10px;"><div class="f-lbl">Nota</div><textarea id="segNota" placeholder="Describe la actividad. Se agregará al historial completo sin borrar lo anterior."></textarea></div>
         <div class="f" style="margin-top:10px;"><div class="f-lbl">Responsable</div>
@@ -1940,7 +1971,7 @@ async function downloadPDF(mode) {
     const getV = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
     row2('Actividad actual', getV('segEstado') || '--', 'Fecha actividad', getV('segUltimoContacto') || '--');
     row2('Hora', getV('segHora') || '--', 'Prioridad', getV('segPrioridad') || '--');
-    row2('Próximo contacto', getV('segProximoContacto') || '--', 'Estado WhatsApp', getV('segEstadoWhatsApp') || '--');
+    row2('Próximo contacto', getV('segProximoContacto') || '--', 'Forma de pago', getV('segEstadoWhatsApp') || '--');
     row1('Responsable', getV('segResponsable') || '--');
     ensureSpace(18);
     secHdr('Customer Journey / Historial Completo',purple);
