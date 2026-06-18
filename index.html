@@ -828,15 +828,12 @@ function todayISO() {
 }
 
 function buildActivityNote() {
-  const getVal = id => { const el = $(id); return el ? el.value.trim() : ''; };
-  const parts = [];
-  const hora = getVal('segHora');
-  const prioridad = getVal('segPrioridad');
-  const nota = getVal('segNota');
-  if (hora) parts.push('Hora: ' + hora);
-  if (prioridad) parts.push('Prioridad: ' + prioridad);
-  if (nota) parts.push(nota);
-  return parts.join('\n');
+  const getVal = id => {
+    const el = $(id);
+    return el ? el.value.trim() : '';
+  };
+
+  return getVal('segNota');
 }
 
 function loadEstadosSeguimiento() {
