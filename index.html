@@ -962,8 +962,17 @@ function loadSeguimientoActual() {
 }
 
 function updateSummaryStrip(s) {
-  const setTxt=(id,v)=>{const el=$(id); if(el) el.textContent=v||'--';};
- setTxt('summaryWhats', s && s.formaPago ? s.formaPago : (s && s.estadoWhatsApp ? s.estadoWhatsApp : '--'));
+  const setTxt = (id, v) => {
+    const el = $(id);
+    if (el) el.textContent = v || '--';
+  };
+
+  const tituloActividad =
+    (s && s.actividad) ||
+    (s && s.estado) ||
+    'Sin actividad registrada';
+
+  setTxt('summaryWhats', tituloActividad);
   setTxt('summaryProximo', s && s.proximoContacto ? s.proximoContacto : '--');
   setTxt('summaryResp', s && s.responsable ? s.responsable : '--');
   setTxt('summaryAct', s && s.actualizado ? s.actualizado : '--');
