@@ -932,8 +932,8 @@ function loadSeguimientoActual() {
     if (s) {
       setVal('segEstado', s.estado || '');
       setVal('segUltimoContacto', s.ultimoContacto || todayISO());
-      setVal('segHora', '');
-      setVal('segPrioridad', 'Media');
+setVal('segHora', s.hora || '');
+setVal('segPrioridad', s.prioridad || 'Media');
       setVal('segResponsable', s.responsable || '');
       setVal('segProximoContacto', s.proximoContacto || '');
       setVal('segEstadoWhatsApp', s.formaPago || s.estadoWhatsApp || '');
