@@ -1015,13 +1015,15 @@ function saveSeguimiento() {
   jsonpAction({
     action:'saveFollowup',
     ...kd,
-    estado:getVal('segEstado'),
-    ultimoContacto:getVal('segUltimoContacto'),
-    proximaAccion:'',
-    responsable:getVal('segResponsable'),
-    proximoContacto:getVal('segProximoContacto'),
-    estadoWhatsapp:getVal('segEstadoWhatsApp'),
-    nuevaNota:nota
+  estado:getVal('segEstado'),
+ultimoContacto:getVal('segUltimoContacto'),
+hora:getVal('segHora'),
+prioridad:getVal('segPrioridad'),
+proximaAccion:'',
+responsable:getVal('segResponsable'),
+proximoContacto:getVal('segProximoContacto'),
+estadoWhatsApp:getVal('segEstadoWhatsApp'),
+nuevaNota:nota
   }, function(resp) {
     applyFollowupConfig(resp);
     const notaEl = $('segNota');
