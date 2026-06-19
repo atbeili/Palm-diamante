@@ -1004,7 +1004,7 @@ function renderHistorialCompleto() {
     ${escapeHtml(formaPago)}
   </span>
 </div>
-` : ''
+` : ''}
       <div class="timeline-note">${escapeHtml(nota).replace(/\n/g,'<br>')}</div>
       <div class="hist-actions">
         <button type="button" class="hist-mini-btn edit" onclick="editarHistorial('${escapeJs(h.rowNumber || '')}')">Corregir</button>
