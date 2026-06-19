@@ -1030,7 +1030,7 @@ nuevaNota:nota
     const notaEl = $('segNota');
     if (notaEl) notaEl.value = '';
     setSegStatus('Seguimiento guardado correctamente.', false);
-    loadSeguimientoActual();
+   
     refreshDashboardIfVisible();
     showToast('Seguimiento guardado');
   }, function(err) {
