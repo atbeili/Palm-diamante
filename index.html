@@ -1129,7 +1129,7 @@ function editarHistorial(rowNumber) {
     nota:nuevaNota
   }, function(resp) {
     setSegStatus('Registro corregido correctamente.', false);
-    loadSeguimientoActual();
+   
     refreshDashboardIfVisible();
     showToast('Registro corregido');
   }, function(err) {
