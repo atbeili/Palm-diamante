@@ -1012,6 +1012,7 @@ function saveSeguimiento() {
   const nota = buildActivityNote();
 
   setSegStatus('Guardando seguimiento...', false);
+  setTimeout(() => setSegStatus('', false), 8000);
   jsonpAction({
     action:'saveFollowup',
     ...kd,
