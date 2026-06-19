@@ -989,12 +989,11 @@ function renderHistorialCompleto() {
     const responsable = h.responsable || 'Sin responsable';
     const fecha = h.fecha || '';
     const nota = h.nota || '';
- const formaPagoRaw = h.formaPago || '';
-    const formaPago = /^(Crédito hipotecario|Recursos propios|Otro:|Otro$)/i.test(formaPagoRaw)
-
-  ? formaPagoRaw
-
-  : '';
+const formaPagoRaw =
+  /^(Crédito hipotecario|Recursos propios|Otro:|Otro$)/i.test(h.formaPago || '')
+    ? h.formaPago
+    : '';
+const formaPago = formaPagoRaw;
     return `
     <div class="hist-item" data-row="${escapeHtml(h.rowNumber || '')}">
       <div class="timeline-top">
