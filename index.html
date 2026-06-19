@@ -989,6 +989,7 @@ function renderHistorialCompleto() {
     const responsable = h.responsable || 'Sin responsable';
     const fecha = h.fecha || '';
     const nota = h.nota || '';
+    const formaPago = h.formaPago || '';
     return `
     <div class="hist-item" data-row="${escapeHtml(h.rowNumber || '')}">
       <div class="timeline-top">
@@ -996,6 +997,14 @@ function renderHistorialCompleto() {
         <div class="timeline-date">${escapeHtml(fecha)}</div>
       </div>
       <div class="timeline-resp">${escapeHtml(responsable)}</div>
+      ${formaPago ? `
+<div class="timeline-pay">
+  <strong>Forma de pago:</strong>
+  <span style="color:#16803a;font-weight:700">
+    ${escapeHtml(formaPago)}
+  </span>
+</div>
+` : ''
       <div class="timeline-note">${escapeHtml(nota).replace(/\n/g,'<br>')}</div>
       <div class="hist-actions">
         <button type="button" class="hist-mini-btn edit" onclick="editarHistorial('${escapeJs(h.rowNumber || '')}')">Corregir</button>
