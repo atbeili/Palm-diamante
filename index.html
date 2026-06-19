@@ -1039,6 +1039,17 @@ nuevaNota:nota
     showToast('Error al guardar seguimiento', true);
   });
 }
+  function getFormaPago() {
+  const selected = document.querySelector('input[name="formaPagoRadio"]:checked');
+  if (!selected) return '';
+
+  if (selected.value === 'Otro') {
+    const otroInput = document.getElementById('formaPagoOtro');
+    return otroInput ? otroInput.value.trim() : 'Otro';
+  }
+
+  return selected.value;
+}
 function setFormaPago() {
   const selected = document.querySelector('input[name="formaPagoRadio"]:checked');
   const otroInput = document.getElementById('formaPagoOtro');
