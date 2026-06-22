@@ -1036,6 +1036,7 @@ prioridad:getVal('segPrioridad'),
 proximaAccion:'',
 responsable:getVal('segResponsable'),
 proximoContacto:getVal('segProximoContacto'),
+    horaProximoContacto:getVal('segHoraProximoContacto'),
 estadoWhatsApp:getVal('segEstadoWhatsApp'),
     formaPago:getFormaPago(),
 nuevaNota:nota
@@ -1355,6 +1356,7 @@ function renderFicha(d) {
         </div>
         <div class="next-contact-row">
           <div class="f"><div class="f-lbl">Próximo contacto</div><input type="date" id="segProximoContacto"></div>
+          <div class="f"><div class="f-lbl">Hora próximo contacto</div><input type="time" id="segHoraProximoContacto"></div>
          <div class="f">
   <div class="f-lbl">Forma de pago</div>
 
