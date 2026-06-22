@@ -412,7 +412,7 @@ function jsonpAction(params, onSuccess, onError) {
   const timeout = setTimeout(() => {
     cleanup();
     if (onError) onError(new Error('Tiempo de espera agotado'));
-  }, 15000);
+  }, 45000);
 
   function cleanup() {
     clearTimeout(timeout);
