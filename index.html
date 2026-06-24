@@ -1337,30 +1337,57 @@ function renderFicha(d) {
   <div class="card">
   <div class="card-head" style="background:#0057b8;display:flex;justify-content:space-between;align-items:center;gap:12px;">
     <span>Control de Convenio</span>
-    <button type="button" class="btn" style="background:#0b5ed7;color:white;">
-      Descargar listado de convenios (Excel)
-    </button>
+  
   </div>
 
   <div class="card-body">
     <div class="res-grid">
-      ${fi('Monto total acordado en convenio','$0.00','money')}
-      ${fi('Fecha de firma del convenio','--')}
-      ${fi('Próxima fecha de pago','--','red')}
-      ${fi('Monto pagado','$0.00','green')}
-      ${fi('Monto restante por pagar','$0.00','red')}
-      ${fi('Descuento condicionado','$0.00','green')}
-      ${fi('Estado del convenio','Sin convenio','red')}
+     <div class="f-item">
+  <div class="f-lbl">Monto total acordado en convenio</div>
+  <input type="number" class="sim-inp" placeholder="$0.00">
+</div>
+
+<div class="f-item">
+  <div class="f-lbl">Fecha de firma del convenio</div>
+  <input type="date" class="sim-inp">
+</div>
+
+<div class="f-item">
+  <div class="f-lbl">Próxima fecha de pago</div>
+  <input type="date" class="sim-inp">
+</div>
+
+<div class="f-item">
+  <div class="f-lbl">Monto pagado</div>
+  <input type="number" class="sim-inp" placeholder="$0.00">
+</div>
+
+<div class="f-item">
+  <div class="f-lbl">Monto restante por pagar</div>
+  <input type="number" class="sim-inp" placeholder="$0.00">
+</div>
+
+<div class="f-item">
+  <div class="f-lbl">Estado del convenio</div>
+  <input type="text" class="sim-inp" value="Sin convenio" readonly>
+</div>
     </div>
 
     <div style="margin-top:12px;padding:12px;border:1px solid #e5e7eb;border-radius:10px;background:#f8fafc;">
       <div class="res-grid">
-        ${fi('Tipo de convenio','--')}
+        <div class="f-item">
+  <div class="f-lbl">Tipo de convenio</div>
+  <select class="sim-inp">
+    <option>Pago único</option>
+    <option>Mensualidades</option>
+    <option>Otro</option>
+  </select>
+</div>
         ${fi('Fecha límite del convenio','--')}
         ${fi('Cumplimiento del convenio','0%')}
         ${fi('Último pago registrado','--')}
         ${fi('Total de pagos registrados','0')}
-        ${fi('Último comprobante','--')}
+      
       </div>
     </div>
 
