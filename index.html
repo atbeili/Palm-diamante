@@ -1522,7 +1522,7 @@ function renderFicha(d) {
         ${fi('Desc. max $', d.desc_monto>0?fmtM(d.desc_monto):'No aplica (Torres 1)', d.desc_monto>0?'green':'dim')}
       </div></div>
     </div>
-<div class="card convenio-card">
+    <div class="card convenio-card">
 
   <div class="convenio-head">
     📋 Control de Convenio
@@ -1531,23 +1531,38 @@ function renderFicha(d) {
   <div class="convenio-top-grid">
 
     <div class="convenio-metric">
-      <div class="convenio-label">Monto total acordado</div>
-      <input type="number" class="sim-inp" id="convMontoTotal">
+      <div class="convenio-label">Monto total acordado<br>en convenio</div>
+      <input type="number" class="sim-inp" id="convMontoTotal" placeholder="$0.00" oninput="actualizarEstadoConvenio()">
     </div>
 
     <div class="convenio-metric">
-      <div class="convenio-label">Fecha de firma</div>
-      <input type="date" class="sim-inp" id="convFechaFirma">
+      <div class="convenio-label">Fecha de firma<br>del convenio</div>
+      <input type="date" class="sim-inp" id="convFechaFirma" oninput="actualizarEstadoConvenio()">
     </div>
 
     <div class="convenio-metric">
-      <div class="convenio-label">Próximo pago</div>
-      <input type="date" class="sim-inp" id="convProximoPago">
+      <div class="convenio-label">Próxima fecha de pago</div>
+      <input type="date" class="sim-inp" id="convProximoPago" oninput="actualizarEstadoConvenio()">
+    </div>
+
+    <div class="convenio-metric">
+      <div class="convenio-label">Monto pagado</div>
+      <input type="number" class="sim-inp" id="convMontoPagado" placeholder="$0.00" oninput="actualizarEstadoConvenio()">
+    </div>
+
+    <div class="convenio-metric">
+      <div class="convenio-label">Monto restante<br>por pagar</div>
+      <input type="text" class="sim-inp" id="convMontoRestante" readonly>
+    </div>
+
+    <div class="convenio-metric">
+      <div class="convenio-label">Descuento condicionado</div>
+      <input type="number" class="sim-inp" id="convDescuentoCondicionado" placeholder="$0.00">
     </div>
 
     <div class="convenio-metric">
       <div class="convenio-label">Estado del convenio</div>
-      <input type="text" class="sim-inp" id="convEstado">
+      <input type="text" class="sim-inp" id="convEstado" readonly>
     </div>
 
   </div>
@@ -1557,17 +1572,11 @@ function renderFicha(d) {
     <div class="convenio-section-grid">
 
       <div>
-
         <div class="f-lbl">Tipo de convenio</div>
-
-        <select
-          class="sim-inp"
-          id="convTipo"
-          onchange="
-            document.getElementById('convTipoOtro').style.display =
-            this.value==='Otro' ? 'block' : 'none';
-          "
-        >
+        <select class="sim-inp" id="convTipo" onchange="
+          document.getElementById('convTipoOtro').style.display =
+          this.value==='Otro' ? 'block' : 'none';
+        ">
           <option>Pago único</option>
           <option>Mensualidades</option>
           <option>Otro</option>
@@ -1579,37 +1588,56 @@ function renderFicha(d) {
           style="display:none;margin-top:8px"
           placeholder="Especificar tipo de convenio"
         >
-
       </div>
 
       <div>
+        <div class="f-lbl">Fecha límite del convenio</div>
+        <input type="date" class="sim-inp" id="convFechaLimite" oninput="actualizarEstadoConvenio()">
+      </div>
 
+      <div>
+        <div class="f-lbl">Cumplimiento del convenio</div>
+        <input type="text" class="sim-inp" id="convCumplimiento" value="0%" readonly>
+      </div>
+
+      <div>
+        <div class="f-lbl">Último pago registrado</div>
+        <input type="text" class="sim-inp" id="convUltimoPago" value="--" readonly>
+      </div>
+
+      <div>
+        <div class="f-lbl">Total de pagos registrados</div>
+        <input type="text" class="sim-inp" id="convTotalPagos" value="0" readonly>
+      </div>
+
+      <div>
         <div class="f-lbl">Convenio firmado (PDF)</div>
-
-        <input
-          type="file"
-          accept=".pdf"
-          class="sim-inp"
-          id="convPdf"
-        >
-
+        <input type="file" accept=".pdf" class="sim-inp" id="convPdf">
       </div>
 
     </div>
 
-    <div style="margin-top:15px">
+    <div class="convenio-bottom-grid">
 
-      <div class="f-lbl">Historial de pagos</div>
+      <div class="convenio-box">
+        <h3>Calendario del convenio</h3>
+        <div class="f-val dim">Sin calendario registrado</div>
+      </div>
 
-      <div
-        id="convHistorial"
-        style="
-          border:1px solid #ddd;
-          border-radius:8px;
-          padding:12px;
-          min-height:60px;"
-      >
-        Sin pagos registrados
+      <div class="convenio-box">
+        <h3>Historial de pagos</h3>
+        <div id="convHistorial" class="f-val dim">Sin pagos registrados</div>
+      </div>
+
+      <div class="convenio-box">
+        <h3>Actualizar pago</h3>
+        <div class="grid2">
+          <input type="date" class="sim-inp" id="convPagoFecha">
+          <input type="text" class="sim-inp" id="convPagoConcepto" placeholder="Concepto del pago">
+          <input type="number" class="sim-inp" id="convPagoMonto" placeholder="Monto">
+          <input type="file" class="sim-inp" id="convPagoComprobante">
+        </div>
+        <button type="button" class="btn" style="margin-top:10px;" onclick="registrarPagoConvenio()">Guardar pago</button>
       </div>
 
     </div>
@@ -1617,8 +1645,8 @@ function renderFicha(d) {
   </div>
 
 </div>
-    ${simCard(d)}
 
+${simCard(d)}
     <div class="card follow-card activity-card">
       <div class="card-head" style="background:var(--navy)">Seguimiento interno</div>
       <div class="card-body activity-body">
@@ -2376,6 +2404,63 @@ function abrirCotizadorProspectos(){
 
     </div>
   `;
+}
+  function actualizarEstadoConvenio(){
+  const total = Number(document.getElementById('convMontoTotal')?.value || 0);
+  const pagado = Number(document.getElementById('convMontoPagado')?.value || 0);
+  const prox = document.getElementById('convProximoPago')?.value;
+  const estado = document.getElementById('convEstado');
+
+  const restante = Math.max(total - pagado, 0);
+  const restanteEl = document.getElementById('convMontoRestante');
+  if(restanteEl) restanteEl.value = total ? restante.toFixed(2) : '';
+
+  if(!estado) return;
+
+  const hoy = new Date();
+  hoy.setHours(0,0,0,0);
+
+  if(!total){
+    estado.value = 'Sin convenio';
+  }else if(restante <= 0){
+    estado.value = 'Cumplido';
+  }else if(prox && new Date(prox + 'T00:00:00') < hoy){
+    estado.value = 'Vencido';
+  }else{
+    estado.value = 'Vigente';
+  }
+}
+
+function registrarPagoConvenio(){
+  const fecha = document.getElementById('convPagoFecha')?.value || '';
+  const concepto = document.getElementById('convPagoConcepto')?.value || '';
+  const monto = Number(document.getElementById('convPagoMonto')?.value || 0);
+  const comp = document.getElementById('convPagoComprobante')?.files?.[0]?.name || '';
+
+  if(!fecha || !concepto || !monto){
+    alert('Completa fecha, concepto y monto del pago.');
+    return;
+  }
+
+  const historial = document.getElementById('convHistorial');
+  if(historial){
+    historial.classList.remove('dim');
+    historial.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 2fr 1fr 1fr;gap:8px;font-size:12px;">
+        <strong>${fecha}</strong>
+        <span>${concepto}</span>
+        <strong>$${monto.toLocaleString('es-MX')}</strong>
+        <span>${comp || 'Sin comprobante'}</span>
+      </div>
+    `;
+  }
+
+  const pagado = document.getElementById('convMontoPagado');
+  if(pagado){
+    pagado.value = (Number(pagado.value || 0) + monto).toFixed(2);
+  }
+
+  actualizarEstadoConvenio();
 }
 </script>
   <!-- Módulo interno Cotizador / Prospectos -->
