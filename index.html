@@ -1335,26 +1335,26 @@ function renderFicha(d) {
       </div></div>
     </div>
   <div class="card">
-  <div class="card-head" style="background:#0057b8;display:flex;justify-content:space-between;align-items:center;">
+  <div class="card-head" style="background:#0057b8;display:flex;justify-content:space-between;align-items:center;gap:12px;">
     <span>Control de Convenio</span>
-    <button type="button" class="btn">
+    <button type="button" class="btn" style="background:#0b5ed7;color:white;">
       Descargar listado de convenios (Excel)
     </button>
   </div>
 
   <div class="card-body">
-
-    <div class="grid2">
+    <div class="res-grid">
       ${fi('Monto total acordado en convenio','$0.00','money')}
       ${fi('Fecha de firma del convenio','--')}
       ${fi('Próxima fecha de pago','--','red')}
       ${fi('Monto pagado','$0.00','green')}
       ${fi('Monto restante por pagar','$0.00','red')}
-      ${fi('Estado del convenio','Sin convenio')}
+      ${fi('Descuento condicionado','$0.00','green')}
+      ${fi('Estado del convenio','Sin convenio','red')}
     </div>
 
     <div style="margin-top:12px;padding:12px;border:1px solid #e5e7eb;border-radius:10px;background:#f8fafc;">
-      <div class="grid2">
+      <div class="res-grid">
         ${fi('Tipo de convenio','--')}
         ${fi('Fecha límite del convenio','--')}
         ${fi('Cumplimiento del convenio','0%')}
@@ -1365,48 +1365,27 @@ function renderFicha(d) {
     </div>
 
     <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-
       <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;">
-        <h3 style="margin-bottom:10px;color:#0f172a;">
-          Calendario del convenio
-        </h3>
-
-        <div class="f-val dim">
-          Sin calendario registrado
-        </div>
+        <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">Calendario del convenio</h3>
+        <div class="f-val dim">Sin calendario registrado</div>
       </div>
 
       <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;">
-        <h3 style="margin-bottom:10px;color:#0f172a;">
-          Historial de pagos
-        </h3>
-
-        <div class="f-val dim">
-          Sin pagos registrados
-        </div>
+        <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">Historial de pagos</h3>
+        <div class="f-val dim">Sin pagos registrados</div>
       </div>
-
     </div>
 
     <div style="margin-top:12px;border:1px solid #e5e7eb;border-radius:10px;padding:12px;">
-
-      <h3 style="margin-bottom:10px;color:#0f172a;">
-        Actualizar pago
-      </h3>
-
+      <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">Actualizar pago</h3>
       <div class="grid2">
         <input type="date" class="sim-inp">
         <input type="text" class="sim-inp" placeholder="Concepto del pago">
         <input type="number" class="sim-inp" placeholder="Monto">
         <input type="file" class="sim-inp">
       </div>
-
-      <button type="button" class="btn" style="margin-top:10px;">
-        Guardar pago
-      </button>
-
+      <button type="button" class="btn" style="margin-top:10px;">Guardar pago</button>
     </div>
-
   </div>
 </div>
     ${simCard(d)}
