@@ -1334,85 +1334,143 @@ function renderFicha(d) {
         ${fi('Desc. max $', d.desc_monto>0?fmtM(d.desc_monto):'No aplica (Torres 1)', d.desc_monto>0?'green':'dim')}
       </div></div>
     </div>
-  <div class="card">
-  <div class="card-head" style="background:#0057b8;display:flex;justify-content:space-between;align-items:center;gap:12px;">
-    <span>Control de Convenio</span>
-  
+ <div class="card">
+  <div class="card-head" style="background:#0057b8;">
+    Control de Convenio
   </div>
 
   <div class="card-body">
+
     <div class="res-grid">
-     <div class="f-item">
-  <div class="f-lbl">Monto total acordado en convenio</div>
-  <input type="number" class="sim-inp" placeholder="$0.00">
-</div>
 
-<div class="f-item">
-  <div class="f-lbl">Fecha de firma del convenio</div>
-  <input type="date" class="sim-inp">
-</div>
+      <div class="f-item">
+        <div class="f-lbl">Monto total acordado en convenio</div>
+        <input type="number" class="sim-inp" id="convMontoTotal" placeholder="$0.00">
+      </div>
 
-<div class="f-item">
-  <div class="f-lbl">Próxima fecha de pago</div>
-  <input type="date" class="sim-inp">
-</div>
+      <div class="f-item">
+        <div class="f-lbl">Fecha de firma del convenio</div>
+        <input type="date" class="sim-inp" id="convFechaFirma">
+      </div>
 
-<div class="f-item">
-  <div class="f-lbl">Monto pagado</div>
-  <input type="number" class="sim-inp" placeholder="$0.00">
-</div>
+      <div class="f-item">
+        <div class="f-lbl">Próxima fecha de pago</div>
+        <input type="date" class="sim-inp" id="convProximoPago">
+      </div>
 
-<div class="f-item">
-  <div class="f-lbl">Monto restante por pagar</div>
-  <input type="number" class="sim-inp" placeholder="$0.00">
-</div>
+      <div class="f-item">
+        <div class="f-lbl">Monto pagado</div>
+        <input type="number" class="sim-inp" id="convMontoPagado" placeholder="$0.00">
+      </div>
 
-<div class="f-item">
-  <div class="f-lbl">Estado del convenio</div>
-  <input type="text" class="sim-inp" value="Sin convenio" readonly>
-</div>
+      <div class="f-item">
+        <div class="f-lbl">Monto restante por pagar</div>
+        <input type="number" class="sim-inp" id="convMontoRestante" placeholder="$0.00">
+      </div>
+
+      <div class="f-item">
+        <div class="f-lbl">Estado del convenio</div>
+        <input type="text" class="sim-inp" id="convEstado" readonly>
+      </div>
+
     </div>
 
     <div style="margin-top:12px;padding:12px;border:1px solid #e5e7eb;border-radius:10px;background:#f8fafc;">
+
       <div class="res-grid">
+
         <div class="f-item">
-  <div class="f-lbl">Tipo de convenio</div>
-  <select class="sim-inp">
-    <option>Pago único</option>
-    <option>Mensualidades</option>
-    <option>Otro</option>
-  </select>
-</div>
-        ${fi('Fecha límite del convenio','--')}
-        ${fi('Cumplimiento del convenio','0%')}
-        ${fi('Último pago registrado','--')}
-        ${fi('Total de pagos registrados','0')}
-      
+          <div class="f-lbl">Tipo de convenio</div>
+          <select class="sim-inp">
+            <option>Pago único</option>
+            <option>Mensualidades</option>
+            <option>Otro</option>
+          </select>
+        </div>
+
+        <div class="f-item">
+          <div class="f-lbl">Fecha límite del convenio</div>
+          <input type="date" class="sim-inp">
+        </div>
+
+        <div class="f-item">
+          <div class="f-lbl">Cumplimiento del convenio</div>
+          <input type="text" class="sim-inp" value="0%" readonly>
+        </div>
+
+        <div class="f-item">
+          <div class="f-lbl">Último pago registrado</div>
+          <input type="text" class="sim-inp" value="--" readonly>
+        </div>
+
+        <div class="f-item">
+          <div class="f-lbl">Total de pagos registrados</div>
+          <input type="text" class="sim-inp" value="0" readonly>
+        </div>
+
       </div>
+
     </div>
 
     <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
       <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;">
-        <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">Calendario del convenio</h3>
-        <div class="f-val dim">Sin calendario registrado</div>
+        <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">
+          Calendario del convenio
+        </h3>
+
+        <div class="f-val dim">
+          Sin calendario registrado
+        </div>
       </div>
 
       <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;">
-        <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">Historial de pagos</h3>
-        <div class="f-val dim">Sin pagos registrados</div>
+        <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">
+          Historial de pagos
+        </h3>
+
+        <div class="f-val dim">
+          Sin pagos registrados
+        </div>
       </div>
+
     </div>
 
     <div style="margin-top:12px;border:1px solid #e5e7eb;border-radius:10px;padding:12px;">
-      <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">Actualizar pago</h3>
+
+      <h3 style="font-size:13px;margin-bottom:10px;color:#0f172a;">
+        Actualizar pago
+      </h3>
+
       <div class="grid2">
+
         <input type="date" class="sim-inp">
-        <input type="text" class="sim-inp" placeholder="Concepto del pago">
-        <input type="number" class="sim-inp" placeholder="Monto">
-        <input type="file" class="sim-inp">
+
+        <input
+          type="text"
+          class="sim-inp"
+          placeholder="Concepto del pago">
+
+        <input
+          type="number"
+          class="sim-inp"
+          placeholder="Monto">
+
+        <input
+          type="file"
+          class="sim-inp">
+
       </div>
-      <button type="button" class="btn" style="margin-top:10px;">Guardar pago</button>
+
+      <button
+        type="button"
+        class="btn"
+        style="margin-top:10px;">
+        Guardar pago
+      </button>
+
     </div>
+
   </div>
 </div>
     ${simCard(d)}
