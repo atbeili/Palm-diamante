@@ -1493,67 +1493,78 @@ function renderFicha(d) {
         ${fi('Desc. max $', d.desc_monto>0?fmtM(d.desc_monto):'No aplica (Torres 1)', d.desc_monto>0?'green':'dim')}
       </div></div>
     </div>
-<div class="card">
-  <div class="card-head" style="background:#0057b8;">
-    Control de Convenio
+<div class="card convenio-card">
+
+  <div class="convenio-head">
+    📋 Control de Convenio
+  </div>
+
+  <div class="convenio-top-grid">
+
+    <div class="convenio-metric">
+      <div class="convenio-label">Monto total acordado</div>
+      <input type="number" class="sim-inp" id="convMontoTotal">
+    </div>
+
+    <div class="convenio-metric">
+      <div class="convenio-label">Fecha de firma</div>
+      <input type="date" class="sim-inp" id="convFechaFirma">
+    </div>
+
+    <div class="convenio-metric">
+      <div class="convenio-label">Próximo pago</div>
+      <input type="date" class="sim-inp" id="convProximoPago">
+    </div>
+
+    <div class="convenio-metric">
+      <div class="convenio-label">Estado del convenio</div>
+      <input type="text" class="sim-inp" id="convEstado">
+    </div>
+
   </div>
 
   <div class="card-body">
 
-    <div class="res-grid">
+    <div class="convenio-section-grid">
 
-      <div class="f-item">
-        <div class="f-lbl">Monto total acordado</div>
-        <input type="number" class="sim-inp" id="convMontoTotal">
+      <div>
+
+        <div class="f-lbl">Tipo de convenio</div>
+
+        <select
+          class="sim-inp"
+          id="convTipo"
+          onchange="
+            document.getElementById('convTipoOtro').style.display =
+            this.value==='Otro' ? 'block' : 'none';
+          "
+        >
+          <option>Pago único</option>
+          <option>Mensualidades</option>
+          <option>Otro</option>
+        </select>
+
+        <input
+          id="convTipoOtro"
+          class="sim-inp"
+          style="display:none;margin-top:8px"
+          placeholder="Especificar tipo de convenio"
+        >
+
       </div>
 
-      <div class="f-item">
-        <div class="f-lbl">Fecha de firma</div>
-        <input type="date" class="sim-inp" id="convFechaFirma">
+      <div>
+
+        <div class="f-lbl">Convenio firmado (PDF)</div>
+
+        <input
+          type="file"
+          accept=".pdf"
+          class="sim-inp"
+          id="convPdf"
+        >
+
       </div>
-
-      <div class="f-item">
-        <div class="f-lbl">Próximo pago</div>
-        <input type="date" class="sim-inp" id="convProximoPago">
-      </div>
-
-      <div class="f-item">
-        <div class="f-lbl">Estado del convenio</div>
-        <input type="text" class="sim-inp" id="convEstado" readonly>
-      </div>
-
-    </div>
-
-    <div style="margin-top:15px">
-
-      <div class="f-lbl">Tipo de convenio</div>
-
-      <select class="sim-inp" id="convTipo"
-        onchange="
-          document.getElementById('convTipoOtro').style.display =
-          this.value==='Otro' ? 'block' : 'none';
-        ">
-        <option>Pago único</option>
-        <option>Mensualidades</option>
-        <option>Otro</option>
-      </select>
-
-      <input
-        id="convTipoOtro"
-        class="sim-inp"
-        style="display:none;margin-top:10px"
-        placeholder="Especificar tipo de convenio">
-    </div>
-
-    <div style="margin-top:15px">
-
-      <div class="f-lbl">Convenio firmado (PDF)</div>
-
-      <input
-        type="file"
-        accept=".pdf"
-        class="sim-inp"
-        id="convPdf">
 
     </div>
 
@@ -1561,18 +1572,21 @@ function renderFicha(d) {
 
       <div class="f-lbl">Historial de pagos</div>
 
-      <div id="convHistorial"
+      <div
+        id="convHistorial"
         style="
           border:1px solid #ddd;
           border-radius:8px;
           padding:12px;
-          min-height:60px;">
+          min-height:60px;"
+      >
         Sin pagos registrados
       </div>
 
     </div>
 
   </div>
+
 </div>
     ${simCard(d)}
 
