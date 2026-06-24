@@ -1335,6 +1335,34 @@ function renderFicha(d) {
       </div></div>
     </div>
     ${simCard(d)}
+    <div class="card">
+  <div class="card-head" style="background:#0d47a1">
+    Control de Convenio
+  </div>
+
+  <div class="card-body">
+    <div class="grid2">
+
+      ${fi('Monto total convenio','$0.00','money')}
+      ${fi('Fecha firma convenio','--')}
+      ${fi('Próxima fecha de pago','--','red')}
+      ${fi('Monto pagado','$0.00','green')}
+      ${fi('Monto pendiente','$0.00','red')}
+      ${fi('Estado convenio','Sin convenio')}
+
+    </div>
+
+    <div style="margin-top:12px">
+      <button class="btn">
+        Actualizar convenio
+      </button>
+
+      <button class="btn">
+        Ver historial pagos
+      </button>
+    </div>
+  </div>
+</div>
     <div class="card follow-card activity-card">
       <div class="card-head" style="background:var(--navy)">Seguimiento interno</div>
       <div class="card-body activity-body">
