@@ -1334,8 +1334,7 @@ function renderFicha(d) {
         ${fi('Desc. max $', d.desc_monto>0?fmtM(d.desc_monto):'No aplica (Torres 1)', d.desc_monto>0?'green':'dim')}
       </div></div>
     </div>
-    ${simCard(d)}
-    <div class="card">
+        <div class="card">
   <div class="card-head" style="background:#0d47a1">
     Control de Convenio
   </div>
@@ -1363,6 +1362,8 @@ function renderFicha(d) {
     </div>
   </div>
 </div>
+    ${simCard(d)}
+
     <div class="card follow-card activity-card">
       <div class="card-head" style="background:var(--navy)">Seguimiento interno</div>
       <div class="card-body activity-body">
