@@ -2665,32 +2665,24 @@ function registrarPagoConvenio(){
   document.getElementById('convPagoMonto').value = '';
   const file = document.getElementById('convPagoComprobante');
   if(file) file.value = '';
-jsonpAction({
-
+  jsonpAction({
   action: 'savePagoConvenio',
-
   cliente: curClient || '',
-
   torre: curData?.torre || '',
-
   depto: curData?.depto || '',
-
   fechaPago: fecha,
-
   concepto: concepto,
-
   monto: monto,
-
   comprobante: comp || 'Sin comprobante',
-
   estado: document.getElementById('convEstado')?.value || ''
-
 },
-
-() => console.log('Pago guardado en Sheets'),
-
-err => console.error(err)
-
+function(res){
+  console.log('Pago guardado en Sheets', res);
+},
+function(err){
+  alert('No se pudo guardar en Sheets. Revisa consola.');
+  console.error(err);
+}
 );
   actualizarEstadoConvenio();
 }
