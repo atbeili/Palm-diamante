@@ -1695,7 +1695,7 @@ function renderFicha(d) {
         ${fi('Desc. max $', d.desc_monto>0?fmtM(d.desc_monto):'No aplica (Torres 1)', d.desc_monto>0?'green':'dim')}
       </div></div>
     </div>
-   <div class="card pd-conv-card">
+  <div class="card pd-conv-card">
   <div class="pd-conv-head">
     <span>📋 Control de Convenio</span>
     <small>Expediente de convenio y pagos</small>
@@ -1703,29 +1703,53 @@ function renderFicha(d) {
 
   <div class="pd-conv-body">
 
-    <div class="pd-conv-summary">
+    <div class="pd-conv-metrics">
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto total acordado<br>en convenio</div>
-        <input type="number" class="pd-conv-input" id="convMontoTotal" value="0" oninput="actualizarEstadoConvenio()">
+        <input type="text" class="pd-conv-input money-input" id="convMontoTotal" value="$0.00" oninput="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto pagado</div>
-        <input type="number" class="pd-conv-input" id="convMontoPagado" placeholder="$0.00" oninput="actualizarEstadoConvenio()">
+        <input type="text" class="pd-conv-input money-input" id="convMontoPagado" value="$0.00" oninput="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto restante<br>por pagar</div>
-        <input type="text" class="pd-conv-input" id="convMontoRestante" readonly>
+        <input type="text" class="pd-conv-input" id="convMontoRestante" value="$0.00" readonly>
+      </div>
+
+      <div class="pd-conv-metric">
+        <div class="pd-conv-label">Descuento<br>condicionado</div>
+        <input type="text" class="pd-conv-input money-input" id="convDescuentoCondicionado" value="$0.00">
       </div>
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Estado del<br>convenio</div>
-        <input type="text" class="pd-conv-input pd-conv-status sin" id="convEstado" value="Sin convenio" readonly>
+        <input type="text" class="pd-conv-status sin" id="convEstado" value="Sin convenio" readonly>
+      </div>
+
+      <div class="pd-conv-metric">
+        <div class="pd-conv-label">Cumplimiento</div>
+        <input type="text" class="pd-conv-input" id="convCumplimiento" value="0%" readonly>
+        <div class="pd-conv-progress-wrap">
+          <div class="pd-conv-progress" id="convProgress"></div>
+        </div>
       </div>
     </div>
 
     <div class="pd-conv-info">
+      <div class="pd-conv-info-item">
+        <div class="pd-conv-label">Tipo de convenio</div>
+        <select class="pd-conv-select" id="convTipo" onchange="toggleConvTipoOtro();actualizarEstadoConvenio();">
+          <option value="">Seleccionar...</option>
+          <option>Pago único</option>
+          <option>Mensualidades</option>
+          <option>Otro</option>
+        </select>
+        <input id="convTipoOtro" class="pd-conv-input pd-conv-other" placeholder="Especificar tipo de convenio">
+      </div>
+
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Fecha de firma</div>
         <input type="date" class="pd-conv-input" id="convFechaFirma" oninput="actualizarEstadoConvenio()">
@@ -1739,28 +1763,6 @@ function renderFicha(d) {
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Fecha límite</div>
         <input type="date" class="pd-conv-input" id="convFechaLimite" oninput="actualizarEstadoConvenio()">
-      </div>
-
-      <div class="pd-conv-info-item">
-        <div class="pd-conv-label">Tipo de convenio</div>
-        <select class="pd-conv-select" id="convTipo" onchange="toggleConvTipoOtro();actualizarEstadoConvenio();">
-          <option value="">Seleccionar...</option>
-          <option>Pago único</option>
-          <option>Mensualidades</option>
-          <option>Otro</option>
-        </select>
-        <input id="convTipoOtro" class="pd-conv-input pd-conv-other" placeholder="Especificar tipo de convenio">
-      </div>
-
-      <div class="pd-conv-info-item">
-        <div class="pd-conv-label">Descuento condicionado</div>
-        <input type="number" class="pd-conv-input" id="convDescuentoCondicionado" placeholder="$0.00">
-      </div>
-
-      <div class="pd-conv-info-item">
-        <div class="pd-conv-label">Cumplimiento</div>
-        <input type="text" class="pd-conv-input" id="convCumplimiento" value="0%" readonly>
-        <div class="pd-conv-progress-wrap"><div class="pd-conv-progress" id="convProgress"></div></div>
       </div>
 
       <div class="pd-conv-info-item">
@@ -1779,7 +1781,13 @@ function renderFicha(d) {
         <h3>Calendario del convenio</h3>
         <div class="pd-conv-box-body">
           <table class="pd-conv-table">
-            <thead><tr><th>Fecha</th><th>Concepto</th><th>Estado</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Concepto</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
             <tbody id="convCalendarioBody">
               <tr><td colspan="3" class="pd-conv-empty">Sin calendario registrado</td></tr>
             </tbody>
@@ -1791,7 +1799,14 @@ function renderFicha(d) {
         <h3>Historial de pagos</h3>
         <div class="pd-conv-box-body">
           <table class="pd-conv-table">
-            <thead><tr><th>Fecha</th><th>Concepto</th><th>Monto</th><th>Comprobante</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Concepto</th>
+                <th>Monto</th>
+                <th>Comprobante</th>
+              </tr>
+            </thead>
             <tbody id="convHistorial">
               <tr><td colspan="4" class="pd-conv-empty">Sin pagos registrados</td></tr>
             </tbody>
@@ -1804,8 +1819,9 @@ function renderFicha(d) {
         <div class="pd-conv-box-body">
           <div class="pd-conv-pay-grid">
             <input type="date" class="pd-conv-input" id="convPagoFecha">
-            <input type="number" class="pd-conv-input" id="convPagoMonto" placeholder="Monto">
+            <input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto">
             <input type="text" class="pd-conv-input" id="convPagoConcepto" placeholder="Concepto del pago">
+            <input type="text" class="pd-conv-input" id="convPagoNota" placeholder="Nota / observaciones">
             <input type="file" class="pd-conv-file" id="convPagoComprobante">
           </div>
           <button type="button" class="pd-conv-btn" onclick="registrarPagoConvenio()">Guardar pago</button>
@@ -2583,19 +2599,32 @@ function abrirCotizadorProspectos(){
 }
 
 function actualizarEstadoConvenio(){
-  const total = Number(document.getElementById('convMontoTotal')?.value || 0);
-  const pagado = Number(document.getElementById('convMontoPagado')?.value || 0);
+  const cleanMoney = v => Number(String(v || '').replace(/[$,\s]/g,'')) || 0;
+  const money = n => '$' + Number(n || 0).toLocaleString('es-MX', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  const totalEl = document.getElementById('convMontoTotal');
+  const pagadoEl = document.getElementById('convMontoPagado');
+
+  const total = cleanMoney(totalEl?.value);
+  const pagado = cleanMoney(pagadoEl?.value);
   const prox = document.getElementById('convProximoPago')?.value;
+
   const estado = document.getElementById('convEstado');
   const warning = document.getElementById('convWarning');
   const restanteEl = document.getElementById('convMontoRestante');
   const cumplimientoEl = document.getElementById('convCumplimiento');
   const progressEl = document.getElementById('convProgress');
 
+  if(totalEl) totalEl.value = money(total);
+  if(pagadoEl) pagadoEl.value = money(pagado);
+
   const restante = Math.max(total - pagado, 0);
   const avance = total > 0 ? Math.min(100, Math.round((pagado / total) * 100)) : 0;
 
-  if(restanteEl) restanteEl.value = total ? '$' + restante.toLocaleString('es-MX', {maximumFractionDigits:2}) : '';
+  if(restanteEl) restanteEl.value = total ? money(restante) : '$0.00';
   if(cumplimientoEl) cumplimientoEl.value = avance + '%';
   if(progressEl) progressEl.style.width = avance + '%';
 
@@ -2622,7 +2651,6 @@ function actualizarEstadoConvenio(){
     estado.classList.add('vigente');
   }
 }
-
 function registrarPagoConvenio(){
   const fecha = document.getElementById('convPagoFecha')?.value || '';
   const concepto = document.getElementById('convPagoConcepto')?.value || '';
