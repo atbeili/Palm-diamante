@@ -480,11 +480,14 @@ input.sim-inp:focus{border-color:var(--gold);outline:none;}
 .pd-conv-body{padding:0;background:#fff;}
 .pd-conv-metrics{
   display:grid;
-  grid-template-columns:1.35fr 1fr 1fr 1fr 1fr 1fr 1.05fr;
+ grid-template-columns:repeat(4,minmax(220px,1fr));
+gap:0;
   border-bottom:1px solid #e5e7eb;
   background:#fff;
 }
 .pd-conv-metric{
+  min-width:0;
+box-sizing:border-box;
   min-height:82px;
   padding:12px 10px;
   border-right:1px solid #e5e7eb;
@@ -505,6 +508,7 @@ input.sim-inp:focus{border-color:var(--gold);outline:none;}
 .pd-conv-input,
 .pd-conv-select{
   width:100%;
+  box-sizing:border-box;
   height:34px;
   padding:7px 9px;
   border:1.5px solid #cbd5e1;
