@@ -1819,7 +1819,7 @@ function renderFicha(d) {
         <div class="pd-conv-box-body">
           <div class="pd-conv-pay-grid">
             <input type="date" class="pd-conv-input" id="convPagoFecha"
-       <input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto" oninput="actualizarEstadoConvenio()" onblur="this.value='$' + Number(String(this.value || '').replace(/[$,\s]/g,'') || 0).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2}); actualizarEstadoConvenio();"> 
+     <input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto" oninput="this.value=this.value.replace(/[^0-9.]/g,''); actualizarEstadoConvenio();" onblur="this.value='$' + Number(String(this.value || '0').replace(/[$,\s]/g,'')).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2}); actualizarEstadoConvenio();">
             <input type="text" class="pd-conv-input" id="convPagoConcepto" placeholder="Concepto del pago">
             <input type="text" class="pd-conv-input" id="convPagoNota" placeholder="Nota / observaciones">
             <input type="file" class="pd-conv-file" id="convPagoComprobante">
@@ -2668,7 +2668,7 @@ if (document.activeElement !== pagadoEl) {
 function registrarPagoConvenio(){
   const fecha = document.getElementById('convPagoFecha')?.value || '';
   const concepto = document.getElementById('convPagoConcepto')?.value || '';
-  const monto = Number(document.getElementById('convPagoMonto')?.value || 0);
+ const monto = cleanMoney(document.getElementById('convPagoMonto')?.value);
   const comp = document.getElementById('convPagoComprobante')?.files?.[0]?.name || '';
 
   if(!fecha || !concepto || !monto){
