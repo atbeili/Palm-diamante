@@ -1706,12 +1706,12 @@ function renderFicha(d) {
     <div class="pd-conv-metrics">
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto total acordado<br>en convenio</div>
-        <input type="text" class="pd-conv-input money-input" id="convMontoTotal" value="$0.00" oninput="actualizarEstadoConvenio()">
+        <input type="text" class="pd-conv-input money-input" id="convMontoTotal" value="$0.00" onblur="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto pagado</div>
-        <input type="text" class="pd-conv-input money-input" id="convMontoPagado" value="$0.00" oninput="actualizarEstadoConvenio()">
+        <input type="text" class="pd-conv-input money-input" id="convMontoPagado" value="$0.00" onblur="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
