@@ -1706,12 +1706,12 @@ function renderFicha(d) {
     <div class="pd-conv-metrics">
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto total acordado<br>en convenio</div>
-        <input type="text" class="pd-conv-input money-input" id="convMontoTotal" value="$0.00" onblur="actualizarEstadoConvenio()">
+        <input type="text" class="pd-conv-input money-input" id="convMontoTotal" value="$0.00" oninput="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto pagado</div>
-        <input type="text" class="pd-conv-input money-input" id="convMontoPagado" value="$0.00" onblur="actualizarEstadoConvenio()">
+        <input type="text" class="pd-conv-input money-input" id="convMontoPagado" value="$0.00" oninput="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
@@ -2618,8 +2618,13 @@ function actualizarEstadoConvenio(){
   const cumplimientoEl = document.getElementById('convCumplimiento');
   const progressEl = document.getElementById('convProgress');
 
-  if(totalEl) totalEl.value = money(total);
-  if(pagadoEl) pagadoEl.value = money(pagado);
+if (document.activeElement !== totalEl) {
+    totalEl.value = money(total);
+}
+
+if (document.activeElement !== pagadoEl) {
+    pagadoEl.value = money(pagado);
+}
 
   const restante = Math.max(total - pagado, 0);
   const avance = total > 0 ? Math.min(100, Math.round((pagado / total) * 100)) : 0;
