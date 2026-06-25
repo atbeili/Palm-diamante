@@ -2608,6 +2608,7 @@ function actualizarEstadoConvenio(){
 
   const totalEl = document.getElementById('convMontoTotal');
   const pagadoEl = document.getElementById('convMontoPagado');
+  const pagoMontoEL = document.getElementById('convPagoMonto');
   const descEl = document.getElementById('convDescuentoCondicionado');
 
   const total = cleanMoney(totalEl?.value);
@@ -2630,6 +2631,9 @@ if (document.activeElement !== pagadoEl) {
 }
   if (descEl && document.activeElement !== descEl) {
   descEl.value = money(descuento);
+}
+  if (pagoMontoEL && document.activeElement !== pagoMontoEL) {
+    pagoMontoEL.value = money(cleanMoney(pagoMontoEL.value));
 }
 
   const restante = Math.max(total - pagado, 0);
