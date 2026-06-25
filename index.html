@@ -1818,8 +1818,9 @@ function renderFicha(d) {
         <h3>Actualizar pago</h3>
         <div class="pd-conv-box-body">
           <div class="pd-conv-pay-grid">
-            <input type="date" class="pd-conv-input" id="convPagoFecha">
-            <input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto">
+            <input type="date" class="pd-conv-input" id="convPagoFecha"
+            <input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto" oninput="actualizarEstadoConvenio()" onblur="actualizarEstadoConvenio()">
+        
             <input type="text" class="pd-conv-input" id="convPagoConcepto" placeholder="Concepto del pago">
             <input type="text" class="pd-conv-input" id="convPagoNota" placeholder="Nota / observaciones">
             <input type="file" class="pd-conv-file" id="convPagoComprobante">
