@@ -1721,7 +1721,7 @@ function renderFicha(d) {
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Descuento<br>condicionado</div>
-        <input type="text" class="pd-conv-input money-input" id="convDescuentoCondicionado" value="$0.00">
+       <input type="text" class="pd-conv-input money-input" id="convDescuentoCondicionado" value="$0.00" onblur="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
@@ -2607,9 +2607,11 @@ function actualizarEstadoConvenio(){
 
   const totalEl = document.getElementById('convMontoTotal');
   const pagadoEl = document.getElementById('convMontoPagado');
+  const descEl = document.getElementById('convDescuentoCondicionado');
 
   const total = cleanMoney(totalEl?.value);
   const pagado = cleanMoney(pagadoEl?.value);
+  const descuento = cleanMoney(descEl?.value);
   const prox = document.getElementById('convProximoPago')?.value;
 
   const estado = document.getElementById('convEstado');
@@ -2624,6 +2626,9 @@ if (document.activeElement !== totalEl) {
 
 if (document.activeElement !== pagadoEl) {
     pagadoEl.value = money(pagado);
+}
+  if (descEl && document.activeElement !== descEl) {
+  descEl.value = money(descuento);
 }
 
   const restante = Math.max(total - pagado, 0);
