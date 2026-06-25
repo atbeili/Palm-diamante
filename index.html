@@ -1695,30 +1695,18 @@ function renderFicha(d) {
         ${fi('Desc. max $', d.desc_monto>0?fmtM(d.desc_monto):'No aplica (Torres 1)', d.desc_monto>0?'green':'dim')}
       </div></div>
     </div>
-    <div class="card pd-conv-card">
+   <div class="card pd-conv-card">
   <div class="pd-conv-head">
     <span>📋 Control de Convenio</span>
     <small>Expediente de convenio y pagos</small>
   </div>
 
   <div class="pd-conv-body">
-    <div class="pd-conv-metrics">
+
+    <div class="pd-conv-summary">
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto total acordado<br>en convenio</div>
-        <input type="number"
-       class="pd-conv-input"
-       id="convMontoTotal"
-      value="0"
-              </div>
-
-      <div class="pd-conv-metric">
-        <div class="pd-conv-label">Fecha de firma<br>del convenio</div>
-        <input type="date" class="pd-conv-input" id="convFechaFirma" oninput="actualizarEstadoConvenio()">
-      </div>
-
-      <div class="pd-conv-metric">
-        <div class="pd-conv-label">Próxima fecha<br>de pago</div>
-        <input type="date" class="pd-conv-input" id="convProximoPago" oninput="actualizarEstadoConvenio()">
+        <input type="number" class="pd-conv-input" id="convMontoTotal" value="0" oninput="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
@@ -1732,17 +1720,27 @@ function renderFicha(d) {
       </div>
 
       <div class="pd-conv-metric">
-        <div class="pd-conv-label">Descuento<br>condicionado</div>
-        <input type="number" class="pd-conv-input" id="convDescuentoCondicionado" placeholder="$0.00">
-      </div>
-
-      <div class="pd-conv-metric">
         <div class="pd-conv-label">Estado del<br>convenio</div>
-        <input type="text" class="pd-conv-status sin" id="convEstado" value="Sin convenio" readonly>
+        <input type="text" class="pd-conv-input pd-conv-status sin" id="convEstado" value="Sin convenio" readonly>
       </div>
     </div>
 
     <div class="pd-conv-info">
+      <div class="pd-conv-info-item">
+        <div class="pd-conv-label">Fecha de firma</div>
+        <input type="date" class="pd-conv-input" id="convFechaFirma" oninput="actualizarEstadoConvenio()">
+      </div>
+
+      <div class="pd-conv-info-item">
+        <div class="pd-conv-label">Próxima fecha de pago</div>
+        <input type="date" class="pd-conv-input" id="convProximoPago" oninput="actualizarEstadoConvenio()">
+      </div>
+
+      <div class="pd-conv-info-item">
+        <div class="pd-conv-label">Fecha límite</div>
+        <input type="date" class="pd-conv-input" id="convFechaLimite" oninput="actualizarEstadoConvenio()">
+      </div>
+
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Tipo de convenio</div>
         <select class="pd-conv-select" id="convTipo" onchange="toggleConvTipoOtro();actualizarEstadoConvenio();">
@@ -1755,19 +1753,14 @@ function renderFicha(d) {
       </div>
 
       <div class="pd-conv-info-item">
-        <div class="pd-conv-label">Fecha límite</div>
-        <input type="date" class="pd-conv-input" id="convFechaLimite" oninput="actualizarEstadoConvenio()">
+        <div class="pd-conv-label">Descuento condicionado</div>
+        <input type="number" class="pd-conv-input" id="convDescuentoCondicionado" placeholder="$0.00">
       </div>
 
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Cumplimiento</div>
         <input type="text" class="pd-conv-input" id="convCumplimiento" value="0%" readonly>
         <div class="pd-conv-progress-wrap"><div class="pd-conv-progress" id="convProgress"></div></div>
-      </div>
-
-      <div class="pd-conv-info-item">
-        <div class="pd-conv-label">Último pago</div>
-        <input type="text" class="pd-conv-input" id="convUltimoPago" value="--" readonly>
       </div>
 
       <div class="pd-conv-info-item">
@@ -1806,7 +1799,7 @@ function renderFicha(d) {
         </div>
       </div>
 
-      <div class="pd-conv-box">
+      <div class="pd-conv-box pd-conv-pay-box">
         <h3>Actualizar pago</h3>
         <div class="pd-conv-box-body">
           <div class="pd-conv-pay-grid">
@@ -1823,7 +1816,6 @@ function renderFicha(d) {
     <div class="pd-conv-warning" id="convWarning">⚠️ El convenio tiene pago vencido. Revisa la próxima fecha de pago.</div>
   </div>
 </div>
-
 ${simCard(d)}
     <div class="card follow-card activity-card">
       <div class="card-head" style="background:var(--navy)">Seguimiento interno</div>
