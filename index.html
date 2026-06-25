@@ -1701,8 +1701,11 @@ function renderFicha(d) {
     <div class="pd-conv-metrics">
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Monto total acordado<br>en convenio</div>
-        <input type="number" class="pd-conv-input" id="convMontoTotal" value="${Number(d.saldo||0).toFixed(2)}" placeholder="$0.00" oninput="actualizarEstadoConvenio()">
-      </div>
+        <input type="number"
+       class="pd-conv-input"
+       id="convMontoTotal"
+      value="0"
+              </div>
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Fecha de firma<br>del convenio</div>
