@@ -1823,7 +1823,7 @@ function renderFicha(d) {
         <div class="pd-conv-box-body">
           <div class="pd-conv-pay-grid">
       <input type="date" class="pd-conv-input" id="convPagoFecha">
-<input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto">
+<input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto" onblur="this.value='$' + Number(String(this.value || '0').replace(/[$,\s]/g,'')).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2}); actualizarEstadoConvenio();">
 <input type="text" class="pd-conv-input" id="convPagoConcepto" placeholder="Nota / observación">
 <input type="file" class="pd-conv-file" id="convPagoComprobante">
           </div>
