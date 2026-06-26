@@ -2790,10 +2790,7 @@ function registrarPagoConvenio(){
   const pagadoEl = document.getElementById('convMontoPagado');
   const totalPagosEl = document.getElementById('convTotalPagos');
 
-  const pagadoActual = cleanMoney(pagadoEl?.value);
-  const nuevoPagado = pagadoActual + monto;
 
-  if(pagadoEl) pagadoEl.value = money(nuevoPagado);
   if(totalPagosEl) totalPagosEl.value = String(Number(totalPagosEl.value || 0) + 1);
 
   document.getElementById('convPagoFecha').value = '';
