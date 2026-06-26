@@ -2758,11 +2758,11 @@ function actualizarCalendarioConvenio(){
 function registrarPagoConvenio(){
   const fecha = document.getElementById('convPagoFecha')?.value || '';
   const concepto = document.getElementById('convPagoConcepto')?.value || '';
-const monto = Number(String(document.getElementById('convPagoMonto')?.value || '').replace(/[$,\s]/g,'')) || 0;
+  const monto = Number(String(document.getElementById('convPagoMonto')?.value || '').replace(/[$,\s]/g,'')) || 0;
   const comp = document.getElementById('convPagoComprobante')?.files?.[0]?.name || '';
 
   if(!fecha || !concepto || !monto){
-    alert('Completa fecha, concepto y monto del pago. El comprobante es opcional.');
+    alert('Completa fecha, nota y monto del pago. El comprobante es opcional.');
     return;
   }
 
@@ -2770,6 +2770,7 @@ const monto = Number(String(document.getElementById('convPagoMonto')?.value || '
   if(historial){
     const firstEmpty = historial.querySelector('.pd-conv-empty');
     if(firstEmpty) historial.innerHTML = '';
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${fecha.split('-').reverse().join('/')}</td>
@@ -2780,96 +2781,46 @@ const monto = Number(String(document.getElementById('convPagoMonto')?.value || '
     historial.prepend(tr);
   }
 
-  const pagado = document.getElementById('convMontoPagado');
-  if(pagado){
-    pagado.value = (Number(pagado.value || 0) + monto).toFixed(2);
-  }
+  const cleanMoney = v => Number(String(v || '').replace(/[$,\s]/g,'')) || 0;
+  const money = n => '$' + Number(n || 0).toLocaleString('es-MX', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
-  const ultimo = document.getElementById('convUltimoPago');
-  if(ultimo) ultimo.value = fecha.split('-').reverse().join('/') + ' · $' + monto.toLocaleString('es-MX');
+  const pagadoEl = document.getElementById('convMontoPagado');
+  const totalPagosEl = document.getElementById('convTotalPagos');
 
-  const totalPagos = document.getElementById('convTotalPagos');
-  if(totalPagos) totalPagos.value = String(Number(totalPagos.value || 0) + 1);
+  const pagadoActual = cleanMoney(pagadoEl?.value);
+  const nuevoPagado = pagadoActual + monto;
+
+  if(pagadoEl) pagadoEl.value = money(nuevoPagado);
+  if(totalPagosEl) totalPagosEl.value = String(Number(totalPagosEl.value || 0) + 1);
 
   document.getElementById('convPagoFecha').value = '';
   document.getElementById('convPagoConcepto').value = '';
   document.getElementById('convPagoMonto').value = '';
   const file = document.getElementById('convPagoComprobante');
   if(file) file.value = '';
-  jsonpAction({
-  action: 'savePagoConvenio',
-  cliente: curClient || '',
-  torre: curData?.torre || '',
-  depto: curData?.depto || '',
-  fechaPago: fecha,
-  concepto: concepto,
-  monto: monto,
-  comprobante: comp || 'Sin comprobante',
-  estado: document.getElementById('convEstado')?.value || ''
-},
-function(res){
-  console.log('Pago guardado en Sheets', res);
-},
-function(err){
-  alert('No se pudo guardar en Sheets. Revisa consola.');
-  console.error(err);
-}
-);
+
   actualizarEstadoConvenio();
-}
-function setConvStatus(msg, type='ok'){
-  const s = document.getElementById('convSaveStatus');
-  if(!s) return;
-  s.className = type === 'error' ? 'pd-conv-error' : 'pd-conv-ok';
-  s.innerHTML = msg;
-}
-
-function guardarConvenio(){
-  actualizarEstadoConvenio();
-
-  const btn = document.querySelector('button[onclick="guardarConvenio()"]');
-  if(btn) btn.textContent = 'Guardando...';
-
-  setConvStatus('⏳ Guardando convenio...', 'ok');
+  guardarConvenio();
 
   jsonpAction({
-    action:'saveConvenio',
+    action:'savePagoConvenio',
     cliente: curClient || '',
     torre: curData?.torre || '',
     depto: curData?.depto || '',
-    montoTotal: document.getElementById('convMontoTotal')?.value || '',
-    fechaFirma: document.getElementById('convFechaFirma')?.value || '',
-    proximoPago: document.getElementById('convProximoPago')?.value || '',
-    montoPagado: document.getElementById('convMontoPagado')?.value || '',
-    montoRestante: document.getElementById('convMontoRestante')?.value || '',
-    descuentoCondicionado: document.getElementById('convDescuentoCondicionado')?.value || '',
-    estado: document.getElementById('convEstado')?.value || '',
-    tipo: document.getElementById('convTipo')?.value || '',
-    tipoOtro: document.getElementById('convTipoOtro')?.value || '',
-    fechaLimite:'',
-    cumplimiento: document.getElementById('convCumplimiento')?.value || '',
-    totalPagos: document.getElementById('convTotalPagos')?.value || '',
-    pdf: document.getElementById('convPdf')?.files?.[0]?.name || ''
+    fechaPago: fecha,
+    concepto: concepto,
+    monto: monto,
+    comprobante: comp || 'Sin comprobante',
+    nota: concepto,
+    estado: document.getElementById('convEstado')?.value || ''
   }, function(res){
-
-    setConvStatus('✅ Convenio guardado correctamente', 'ok');
-
-    const header = document.getElementById('convResumenHeader');
-    if(header) header.textContent = document.getElementById('convEstado')?.value || 'Convenio registrado';
-
-    const start = document.getElementById('convStartBox');
-    const body = document.getElementById('convModuloBody');
-    if(start) start.style.display = 'none';
-    if(body) body.style.display = 'block';
-
-    if(btn) btn.textContent = 'Actualizar convenio';
-
+    console.log('Pago guardado en Sheets', res);
   }, function(err){
-
+    alert('No se pudo guardar el pago en Sheets. Revisa consola.');
     console.error(err);
-    setConvStatus('❌ Error al guardar convenio. Revisa consola.', 'error');
-    if(btn) btn.textContent = 'Guardar convenio';
-
   });
 }
     // ========= PREPARADO PARA GOOGLE SHEETS =========
