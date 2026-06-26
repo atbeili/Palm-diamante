@@ -2817,17 +2817,26 @@ function(err){
 );
   actualizarEstadoConvenio();
 }
-function guardarConvenio(){
+function setConvStatus(msg, type='ok'){
+  const s = document.getElementById('convSaveStatus');
+  if(!s) return;
+  s.className = type === 'error' ? 'pd-conv-error' : 'pd-conv-ok';
+  s.innerHTML = msg;
+}
 
+function guardarConvenio(){
   actualizarEstadoConvenio();
+
+  const btn = document.querySelector('button[onclick="guardarConvenio()"]');
+  if(btn) btn.textContent = 'Guardando...';
+
+  setConvStatus('⏳ Guardando convenio...', 'ok');
 
   jsonpAction({
     action:'saveConvenio',
-
     cliente: curClient || '',
     torre: curData?.torre || '',
     depto: curData?.depto || '',
-
     montoTotal: document.getElementById('convMontoTotal')?.value || '',
     fechaFirma: document.getElementById('convFechaFirma')?.value || '',
     proximoPago: document.getElementById('convProximoPago')?.value || '',
@@ -2839,23 +2848,30 @@ function guardarConvenio(){
     tipoOtro: document.getElementById('convTipoOtro')?.value || '',
     fechaLimite:'',
     cumplimiento: document.getElementById('convCumplimiento')?.value || '',
-    totalPagos: document.getElementById('convTotalPagos')?.value || ''
+    totalPagos: document.getElementById('convTotalPagos')?.value || '',
+    pdf: document.getElementById('convPdf')?.files?.[0]?.name || ''
+  }, function(res){
 
-  },function(){
+    setConvStatus('✅ Convenio guardado correctamente', 'ok');
 
-      const s=document.getElementById('convSaveStatus');
+    const header = document.getElementById('convResumenHeader');
+    if(header) header.textContent = document.getElementById('convEstado')?.value || 'Convenio registrado';
 
-      if(s){
+    const start = document.getElementById('convStartBox');
+    const body = document.getElementById('convModuloBody');
+    if(start) start.style.display = 'none';
+    if(body) body.style.display = 'block';
 
-          s.innerHTML='✅ Convenio guardado correctamente';
-          s.style.color='#0a7b35';
+    if(btn) btn.textContent = 'Actualizar convenio';
 
-      }
-    
-  });  
-  
-    }
+  }, function(err){
 
+    console.error(err);
+    setConvStatus('❌ Error al guardar convenio. Revisa consola.', 'error');
+    if(btn) btn.textContent = 'Guardar convenio';
+
+  });
+}
     // ========= PREPARADO PARA GOOGLE SHEETS =========
 
     if(typeof jsonpAction === 'function'){
