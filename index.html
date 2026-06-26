@@ -1699,13 +1699,21 @@ function renderFicha(d) {
         ${fi('Desc. max $', d.desc_monto>0?fmtM(d.desc_monto):'No aplica (Torres 1)', d.desc_monto>0?'green':'dim')}
       </div></div>
     </div>
-  <div class="card pd-conv-card">
+    <div class="card pd-conv-card" id="convenioCard">
   <div class="pd-conv-head">
-    <span>📋 Control de Convenio</span>
-    <small>Expediente de convenio y pagos</small>
+    <span>📄 Control de convenio</span>
+    <small id="convResumenHeader">Sin convenio registrado</small>
   </div>
 
-  <div class="pd-conv-body">
+  <div class="pd-conv-start" id="convStartBox">
+    <div>
+      <strong id="convStartTitle">Este cliente no tiene convenio registrado</strong>
+      <p id="convStartText">Crea un convenio para comenzar a controlar pagos, calendario, notas y comprobantes.</p>
+    </div>
+    <button type="button" class="pd-conv-btn" onclick="abrirModuloConvenio()">Crear convenio</button>
+  </div>
+
+  <div class="pd-conv-body" id="convModuloBody" style="display:none;">
 
     <div class="pd-conv-metrics">
       <div class="pd-conv-metric">
@@ -1725,7 +1733,7 @@ function renderFicha(d) {
 
       <div class="pd-conv-metric">
         <div class="pd-conv-label">Descuento<br>condicionado</div>
-       <input type="text" class="pd-conv-input money-input" id="convDescuentoCondicionado" value="$0.00" onblur="actualizarEstadoConvenio()">
+        <input type="text" class="pd-conv-input money-input" id="convDescuentoCondicionado" value="$0.00" onblur="actualizarEstadoConvenio()">
       </div>
 
       <div class="pd-conv-metric">
@@ -1745,7 +1753,7 @@ function renderFicha(d) {
     <div class="pd-conv-info">
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Tipo de convenio</div>
-        <select class="pd-conv-select" id="convTipo" onchange="toggleConvTipoOtro();actualizarEstadoConvenio();">
+        <select class="pd-conv-select" id="convTipo" onchange="toggleConvTipoOtro(); actualizarEstadoConvenio();">
           <option value="">Seleccionar...</option>
           <option>Pago único</option>
           <option>Mensualidades</option>
@@ -1760,11 +1768,10 @@ function renderFicha(d) {
       </div>
 
       <div class="pd-conv-info-item">
-       <div class="pd-conv-label">Fecha de pago</div>
+        <div class="pd-conv-label">Fecha de pago</div>
         <input type="date" class="pd-conv-input" id="convProximoPago" oninput="actualizarEstadoConvenio()">
       </div>
 
-  
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Total pagos</div>
         <input type="text" class="pd-conv-input" id="convTotalPagos" value="0" readonly>
@@ -1783,13 +1790,13 @@ function renderFicha(d) {
           <table class="pd-conv-table">
             <thead>
               <tr>
-               <th>Fecha de pago</th>
-         <th>Monto</th>
+                <th>Fecha de pago</th>
+                <th>Monto</th>
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody id="convCalendarioBody">
-             <tr><td colspan="3" class="pd-conv-empty">Sin fechas de pago registradas</td></tr>
+              <tr><td colspan="3" class="pd-conv-empty">Sin fechas de pago registradas</td></tr>
             </tbody>
           </table>
         </div>
@@ -1802,7 +1809,7 @@ function renderFicha(d) {
             <thead>
               <tr>
                 <th>Fecha</th>
-                <th>Concepto</th>
+                <th>Nota</th>
                 <th>Monto</th>
                 <th>Comprobante</th>
               </tr>
@@ -1818,17 +1825,43 @@ function renderFicha(d) {
         <h3>Actualizar pago</h3>
         <div class="pd-conv-box-body">
           <div class="pd-conv-pay-grid">
-      <input type="date" class="pd-conv-input" id="convPagoFecha">
-<input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto" onblur="this.value='$' + Number(String(this.value || '0').replace(/[$,\s]/g,'')).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2}); actualizarEstadoConvenio();">
-<input type="text" class="pd-conv-input" id="convPagoConcepto" placeholder="Nota / observación">
-<input type="file" class="pd-conv-file" id="convPagoComprobante">
+            <input type="date" class="pd-conv-input" id="convPagoFecha">
+            <input type="text" class="pd-conv-input money-input" id="convPagoMonto" placeholder="Monto">
+            <input type="text" class="pd-conv-input" id="convPagoConcepto" placeholder="Nota / observación">
+            <input type="file" class="pd-conv-file" id="convPagoComprobante">
           </div>
           <button type="button" class="pd-conv-btn" onclick="registrarPagoConvenio()">Guardar pago</button>
         </div>
       </div>
+
+      <div class="pd-conv-box">
+        <h3>Historial de notas</h3>
+        <div class="pd-conv-box-body">
+          <table class="pd-conv-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Nota</th>
+              </tr>
+            </thead>
+            <tbody id="convNotasHistorial">
+              <tr><td colspan="2" class="pd-conv-empty">Sin notas registradas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="pd-conv-box pd-conv-pay-box">
+        <h3>Agregar nota</h3>
+        <div class="pd-conv-box-body">
+          <input type="date" class="pd-conv-input" id="convNotaFecha">
+          <input type="text" class="pd-conv-input" id="convNotaTexto" placeholder="Escribe una nota del convenio">
+          <button type="button" class="pd-conv-btn" onclick="registrarNotaConvenio()">Guardar nota</button>
+        </div>
+      </div>
     </div>
 
-    <div class="pd-conv-warning" id="convWarning">⚠️ El convenio tiene pago vencido. Revisa la próxima fecha de pago.</div>
+    <div class="pd-conv-warning" id="convWarning">⚠️ El convenio tiene pago vencido. Revisa la fecha de pago.</div>
   </div>
 </div>
 ${simCard(d)}
@@ -2589,6 +2622,17 @@ function abrirCotizadorProspectos(){
 
     </div>
   `;
+}
+  function abrirModuloConvenio(){
+  const start = document.getElementById('convStartBox');
+  const body = document.getElementById('convModuloBody');
+  const header = document.getElementById('convResumenHeader');
+
+  if(start) start.style.display = 'none';
+  if(body) body.style.display = 'block';
+  if(header) header.textContent = 'Convenio en edición';
+
+  actualizarEstadoConvenio();
 }
   function toggleConvTipoOtro(){
   const tipo = document.getElementById('convTipo');
