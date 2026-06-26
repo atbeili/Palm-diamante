@@ -1760,15 +1760,11 @@ function renderFicha(d) {
       </div>
 
       <div class="pd-conv-info-item">
-        <div class="pd-conv-label">Próxima fecha de pago</div>
+       <div class="pd-conv-label">Fecha de pago</div>
         <input type="date" class="pd-conv-input" id="convProximoPago" oninput="actualizarEstadoConvenio()">
       </div>
 
-      <div class="pd-conv-info-item">
-        <div class="pd-conv-label">Fecha límite</div>
-        <input type="date" class="pd-conv-input" id="convFechaLimite" oninput="actualizarEstadoConvenio()">
-      </div>
-
+  
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Total pagos</div>
         <input type="text" class="pd-conv-input" id="convTotalPagos" value="0" readonly>
@@ -1787,13 +1783,13 @@ function renderFicha(d) {
           <table class="pd-conv-table">
             <thead>
               <tr>
-                <th>Fecha</th>
-                <th>Concepto</th>
+               <th>Fecha de pago</th>
+         <th>Monto</th>
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody id="convCalendarioBody">
-              <tr><td colspan="3" class="pd-conv-empty">Sin calendario registrado</td></tr>
+             <tr><td colspan="3" class="pd-conv-empty">Sin fechas de pago registradas</td></tr>
             </tbody>
           </table>
         </div>
@@ -2667,6 +2663,37 @@ if (document.activeElement !== pagadoEl) {
     estado.value = 'Vigente';
     estado.classList.add('vigente');
   }
+  actualizarCalendarioConvenio();
+}
+  function actualizarCalendarioConvenio(){
+  const tipo = document.getElementById('convTipo')?.value || '';
+  const fechaPagoEl = document.getElementById('convProximoPago');
+  const totalEl = document.getElementById('convMontoTotal');
+  const body = document.getElementById('convCalendarioBody');
+
+  if(!body) return;
+
+  const cleanMoney = v => Number(String(v || '').replace(/[$,\s]/g,'')) || 0;
+  const money = n => '$' + Number(n || 0).toLocaleString('es-MX', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  const fechaPago = fechaPagoEl?.value || '';
+  const total = cleanMoney(totalEl?.value);
+
+  if(!fechaPago){
+    body.innerHTML = '<tr><td colspan="3" class="pd-conv-empty">Sin fechas de pago registradas</td></tr>';
+    return;
+  }
+
+  body.innerHTML = `
+    <tr>
+      <td>${fechaPago.split('-').reverse().join('/')}</td>
+      <td>${money(total)}</td>
+      <td>${tipo === 'Pago único' ? 'Pago único pendiente' : 'Pendiente'}</td>
+    </tr>
+  `;
 }
 function registrarPagoConvenio(){
   const fecha = document.getElementById('convPagoFecha')?.value || '';
