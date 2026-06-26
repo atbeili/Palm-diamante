@@ -2640,7 +2640,6 @@ function abrirCotizadorProspectos(){
   if(!tipo || !otro) return;
   otro.style.display = tipo.value === 'Otro' ? 'block' : 'none';
 }
-
 function actualizarEstadoConvenio(){
   const cleanMoney = v => Number(String(v || '').replace(/[$,\s]/g,'')) || 0;
   const money = n => '$' + Number(n || 0).toLocaleString('es-MX', {
@@ -2650,102 +2649,99 @@ function actualizarEstadoConvenio(){
 
   const totalEl = document.getElementById('convMontoTotal');
   const pagadoEl = document.getElementById('convMontoPagado');
-  const pagoMontoEL = document.getElementById('convPagoMonto');
-  const descEl = document.getElementById('convDescuentoCondicionado');
-
-  const total = cleanMoney(totalEl?.value);
-  const pagado = cleanMoney(pagadoEl?.value);
-  const descuento = cleanMoney(descEl?.value);
-  const prox = document.getElementById('convProximoPago')?.value;
-
-  const estado = document.getElementById('convEstado');
-  const warning = document.getElementById('convWarning');
+  const descuentoEl = document.getElementById('convDescuentoCondicionado');
   const restanteEl = document.getElementById('convMontoRestante');
   const cumplimientoEl = document.getElementById('convCumplimiento');
   const progressEl = document.getElementById('convProgress');
+  const estadoEl = document.getElementById('convEstado');
+  const warningEl = document.getElementById('convWarning');
+  const fechaPagoEl = document.getElementById('convProximoPago');
+  const headerEl = document.getElementById('convResumenHeader');
 
-if (document.activeElement !== totalEl) {
-    totalEl.value = money(total);
-}
+  const total = cleanMoney(totalEl?.value);
+  const pagado = cleanMoney(pagadoEl?.value);
+  const descuento = cleanMoney(descuentoEl?.value);
+  const fechaPago = fechaPagoEl?.value || '';
 
-if (document.activeElement !== pagadoEl) {
-    pagadoEl.value = money(pagado);
-}
-  if (descEl && document.activeElement !== descEl) {
-  descEl.value = money(descuento);
-}
-  if (pagoMontoEL && document.activeElement !== pagoMontoEL) {
-    pagoMontoEL.value = money(cleanMoney(pagoMontoEL.value));
-}
+  if(totalEl && document.activeElement !== totalEl) totalEl.value = money(total);
+  if(pagadoEl && document.activeElement !== pagadoEl) pagadoEl.value = money(pagado);
+  if(descuentoEl && document.activeElement !== descuentoEl) descuentoEl.value = money(descuento);
 
   const restante = Math.max(total - pagado, 0);
   const avance = total > 0 ? Math.min(100, Math.round((pagado / total) * 100)) : 0;
 
-  if(restanteEl) restanteEl.value = total ? money(restante) : '$0.00';
+  if(restanteEl) restanteEl.value = money(restante);
   if(cumplimientoEl) cumplimientoEl.value = avance + '%';
   if(progressEl) progressEl.style.width = avance + '%';
 
-  if(!estado) return;
+  if(!estadoEl) return;
 
-  estado.classList.remove('sin','vigente','vencido','cumplido');
-  if(warning) warning.style.display = 'none';
+  estadoEl.classList.remove('sin','vigente','vencido','cumplido');
 
   const hoy = new Date();
   hoy.setHours(0,0,0,0);
 
-  if(!total){
-    estado.value = 'Sin convenio';
-    estado.classList.add('sin');
-  }else if(restante <= 0){
-    estado.value = 'Cumplido';
-    estado.classList.add('cumplido');
-  }else if(prox && new Date(prox + 'T00:00:00') < hoy){
-    estado.value = 'Vencido';
-    estado.classList.add('vencido');
-    if(warning) warning.style.display = 'block';
-  }else{
-    estado.value = 'Vigente';
-    estado.classList.add('vigente');
+  let estado = 'Sin convenio';
+  let clase = 'sin';
+  let warning = false;
+
+  if(total <= 0){
+    estado = 'Sin convenio';
+    clase = 'sin';
+  } else if(restante <= 0){
+    estado = 'Cumplido';
+    clase = 'cumplido';
+  } else if(fechaPago && new Date(fechaPago + 'T00:00:00') < hoy){
+    estado = 'Vencido';
+    clase = 'vencido';
+    warning = true;
+  } else {
+    estado = 'Vigente';
+    clase = 'vigente';
   }
+
+  estadoEl.value = estado;
+  estadoEl.classList.add(clase);
+
+  if(warningEl) warningEl.style.display = warning ? 'block' : 'none';
+  if(headerEl) headerEl.textContent = total > 0 ? 'Convenio registrado' : 'Sin convenio registrado';
+
   actualizarCalendarioConvenio();
 }
-  function actualizarCalendarioConvenio(){
-  const tipo = document.getElementById('convTipo')?.value || '';
-  const fechaPagoEl = document.getElementById('convProximoPago');
-  const totalEl = document.getElementById('convMontoTotal');
-  const pagadoEl = document.getElementById('convMontoPagado');
-  const body = document.getElementById('convCalendarioBody');
 
-  if(!body) return;
-
+function actualizarCalendarioConvenio(){
   const cleanMoney = v => Number(String(v || '').replace(/[$,\s]/g,'')) || 0;
   const money = n => '$' + Number(n || 0).toLocaleString('es-MX', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
 
-  const fechaPago = fechaPagoEl?.value || '';
-  const total = cleanMoney(totalEl?.value);
-  const pagado = cleanMoney(pagadoEl?.value);
+  const tipo = document.getElementById('convTipo')?.value || '';
+  const fechaPago = document.getElementById('convProximoPago')?.value || '';
+  const total = cleanMoney(document.getElementById('convMontoTotal')?.value);
+  const pagado = cleanMoney(document.getElementById('convMontoPagado')?.value);
+  const body = document.getElementById('convCalendarioBody');
 
-  if(!fechaPago){
+  if(!body) return;
+
+  if(!fechaPago || total <= 0){
     body.innerHTML = '<tr><td colspan="3" class="pd-conv-empty">Sin fechas de pago registradas</td></tr>';
     return;
   }
 
   const hoy = new Date();
   hoy.setHours(0,0,0,0);
+
   const fecha = new Date(fechaPago + 'T00:00:00');
 
   let estado = 'Pendiente';
-
-  if(pagado >= total && total > 0){
+  if(pagado >= total){
     estado = '✅ Pagado';
-  }else if(fecha < hoy){
+  } else if(fecha < hoy){
     estado = '🔴 Vencido';
-  }else if(tipo === 'Pago único'){
+  } else if(tipo === 'Pago único'){
     estado = '🟡 Pago único pendiente';
-  }else{
+  } else {
     estado = '🟡 Próximo pago';
   }
 
