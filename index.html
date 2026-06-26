@@ -2669,6 +2669,7 @@ if (document.activeElement !== pagadoEl) {
   const tipo = document.getElementById('convTipo')?.value || '';
   const fechaPagoEl = document.getElementById('convProximoPago');
   const totalEl = document.getElementById('convMontoTotal');
+  const pagadoEl = document.getElementById('convMontoPagado');
   const body = document.getElementById('convCalendarioBody');
 
   if(!body) return;
@@ -2681,17 +2682,34 @@ if (document.activeElement !== pagadoEl) {
 
   const fechaPago = fechaPagoEl?.value || '';
   const total = cleanMoney(totalEl?.value);
+  const pagado = cleanMoney(pagadoEl?.value);
 
   if(!fechaPago){
     body.innerHTML = '<tr><td colspan="3" class="pd-conv-empty">Sin fechas de pago registradas</td></tr>';
     return;
   }
 
+  const hoy = new Date();
+  hoy.setHours(0,0,0,0);
+  const fecha = new Date(fechaPago + 'T00:00:00');
+
+  let estado = 'Pendiente';
+
+  if(pagado >= total && total > 0){
+    estado = '✅ Pagado';
+  }else if(fecha < hoy){
+    estado = '🔴 Vencido';
+  }else if(tipo === 'Pago único'){
+    estado = '🟡 Pago único pendiente';
+  }else{
+    estado = '🟡 Próximo pago';
+  }
+
   body.innerHTML = `
     <tr>
       <td>${fechaPago.split('-').reverse().join('/')}</td>
       <td>${money(total)}</td>
-      <td>${tipo === 'Pago único' ? 'Pago único pendiente' : 'Pendiente'}</td>
+      <td>${estado}</td>
     </tr>
   `;
 }
