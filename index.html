@@ -2698,7 +2698,7 @@ if (document.activeElement !== pagadoEl) {
 function registrarPagoConvenio(){
   const fecha = document.getElementById('convPagoFecha')?.value || '';
   const concepto = document.getElementById('convPagoConcepto')?.value || '';
- const monto = cleanMoney(document.getElementById('convPagoMonto')?.value);
+const monto = Number(String(document.getElementById('convPagoMonto')?.value || '').replace(/[$,\s]/g,'')) || 0;
   const comp = document.getElementById('convPagoComprobante')?.files?.[0]?.name || '';
 
   if(!fecha || !concepto || !monto){
