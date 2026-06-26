@@ -1780,7 +1780,8 @@ function renderFicha(d) {
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Convenio firmado PDF</div>
         <input type="file" accept=".pdf" class="pd-conv-file" id="convPdf">
-        <button type="button" class="pd-conv-btn" onclick="guardarConvenio()">Guardar convenio</button>
+       <button type="button" class="pd-conv-btn" onclick="guardarConvenio()">Guardar convenio</button>
+<div id="convSaveStatus" class="pd-conv-empty" style="margin-top:8px;"></div>
       </div>
     </div>
 
@@ -2818,15 +2819,79 @@ function(err){
 }
 function guardarConvenio(){
 
-  actualizarEstadoConvenio();
+    actualizarEstadoConvenio();
 
-  const pdf = document.getElementById('convPdf');
+    const status = document.getElementById('convSaveStatus');
 
-  if(pdf && pdf.files.length){
-      alert('✅ Convenio guardado correctamente.\n\nArchivo: ' + pdf.files[0].name);
-  }else{
-      alert('✅ Convenio guardado correctamente.');
-  }
+    if(status){
+        status.className = 'pd-conv-ok';
+        status.innerHTML = '✅ Convenio guardado correctamente';
+    }
+
+    const start = document.getElementById('convStartBox');
+    const body = document.getElementById('convModuloBody');
+    const header = document.getElementById('convResumenHeader');
+
+    if(start) start.style.display = 'none';
+    if(body) body.style.display = 'block';
+    if(header) header.textContent = 'Convenio registrado';
+
+    const pdf = document.getElementById('convPdf');
+
+    if(pdf && pdf.files.length){
+        if(status){
+            status.innerHTML =
+                '✅ Convenio guardado<br><small>' +
+                pdf.files[0].name +
+                '</small>';
+        }
+    }
+
+    // ========= PREPARADO PARA GOOGLE SHEETS =========
+
+    if(typeof jsonpAction === 'function'){
+
+        jsonpAction({
+
+            action: 'saveConvenio',
+
+            cliente: curClient || '',
+
+            torre: curData?.torre || '',
+
+            depto: curData?.depto || '',
+
+            tipo: document.getElementById('convTipo')?.value || '',
+
+            fechaFirma: document.getElementById('convFechaFirma')?.value || '',
+
+            fechaPago: document.getElementById('convProximoPago')?.value || '',
+
+            montoTotal: document.getElementById('convMontoTotal')?.value || '',
+
+            montoPagado: document.getElementById('convMontoPagado')?.value || '',
+
+            descuento: document.getElementById('convDescuentoCondicionado')?.value || '',
+
+            estado: document.getElementById('convEstado')?.value || '',
+
+            pdf: pdf && pdf.files.length ? pdf.files[0].name : ''
+
+        },
+
+        function(res){
+
+            console.log('Convenio guardado',res);
+
+        },
+
+        function(err){
+
+            console.error(err);
+
+        });
+
+    }
 
 }
 </script>
