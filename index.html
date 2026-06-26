@@ -1780,6 +1780,7 @@ function renderFicha(d) {
       <div class="pd-conv-info-item">
         <div class="pd-conv-label">Convenio firmado PDF</div>
         <input type="file" accept=".pdf" class="pd-conv-file" id="convPdf">
+        <button type="button" class="pd-conv-btn" onclick="guardarConvenio()">Guardar convenio</button>
       </div>
     </div>
 
@@ -2815,7 +2816,19 @@ function(err){
 );
   actualizarEstadoConvenio();
 }
+function guardarConvenio(){
 
+  actualizarEstadoConvenio();
+
+  const pdf = document.getElementById('convPdf');
+
+  if(pdf && pdf.files.length){
+      alert('✅ Convenio guardado correctamente.\n\nArchivo: ' + pdf.files[0].name);
+  }else{
+      alert('✅ Convenio guardado correctamente.');
+  }
+
+}
 </script>
   <!-- Módulo interno Cotizador / Prospectos -->
 <div id="cotizadorProspectosPanel" style="display:none;"></div>
